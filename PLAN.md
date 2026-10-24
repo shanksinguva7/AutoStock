@@ -20,7 +20,7 @@ Tick a box only when the tests pass and the commits are made. One slice at a tim
 - [ ] Add this planning chat's public share link to `PROMPTS.md`
 
 ## Phase 1 — Backend (strict TDD)
-- [ ] 1. Health check: `GET /health` returns 200; DB connection test
+- [x] 1. Health check: `GET /health` returns 200; DB connection test
 - [ ] 2. Register: 201 + no passwordHash; 400 on bad email or short password; 409 duplicate email; password stored hashed; default role `user`
 - [ ] 3. Login: 200 + JWT for valid credentials; 401 for wrong password or unknown email
 - [ ] 4. Auth middleware + admin guard: 401 without or with bad token; 403 for non-admin on an admin route; seed script creates admin
