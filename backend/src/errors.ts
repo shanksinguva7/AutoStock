@@ -1,3 +1,5 @@
+import { HttpStatus } from './httpStatus';
+
 /** Base class for errors that map to a specific HTTP status. */
 export class AppError extends Error {
   constructor(
@@ -11,12 +13,12 @@ export class AppError extends Error {
 
 export class ValidationError extends AppError {
   constructor(message: string) {
-    super(message, 400);
+    super(message, HttpStatus.BAD_REQUEST);
   }
 }
 
 export class ConflictError extends AppError {
   constructor(message: string) {
-    super(message, 409);
+    super(message, HttpStatus.CONFLICT);
   }
 }
