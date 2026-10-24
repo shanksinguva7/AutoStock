@@ -62,4 +62,5 @@ Tick a box only when the tests pass and the commits are made. One slice at a tim
 
 ## Decisions log
 - Stack: Node + TS + Express + Prisma/SQLite; React + Tailwind frontend. Change here first if it changes.
+- Frontend style: dark theme via the bugatti-design-analysis skill, plus semantic status colors; no Bugatti branding.
 - Open questions: (none yet)

@@ -56,6 +56,11 @@ Every behavior follows Red -> Green -> Refactor, with THREE separate commits:
 - Tailwind only, mobile-first, responsive, visible loading/error/empty states. Store the JWT carefully and attach it in one API client module.
 - Hide admin UI for non-admins (the backend still enforces roles).
 - Write component tests for forms, the disabled Purchase button and the admin gate.
+- Visual style comes from the `bugatti-design-analysis` skill, for the look only (dark canvas, restrained type). It is a third-party design reference, not code. Do not use Bugatti's name, logo, wordmark or photos. The app name stays "AutoStock".
+- The skill has no accent color, so define semantic status colors (success, error, warning, disabled) once as Tailwind theme tokens. Toasts, validation errors and the disabled Purchase button need them.
+- Tables and forms: sentence case, high contrast (WCAG AA), readable sizes. Uppercase or letterspaced type only for headings.
+- No vehicle photos (the model has no image field). Get the look from typography and spacing, not imagery.
+- Fonts: system or web-safe fallbacks. Bugatti's typefaces are proprietary.
 
 ## Docs and AI transparency
 - README sections: overview, features, tech stack, local setup (backend + frontend), env vars, seeded admin login, API summary, assumptions, screenshots, test report, "My AI Usage".
