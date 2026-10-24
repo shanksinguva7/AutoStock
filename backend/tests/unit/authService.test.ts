@@ -1,6 +1,8 @@
 import { AuthService } from '../../src/services/authService';
 import { NewUser, User, UserRepository } from '../../src/repositories/userRepository';
-import { ConflictError } from '../../src/errors';
+import jwt from 'jsonwebtoken';
+import { ConflictError, UnauthorizedError } from '../../src/errors';
+import { AuthConfig } from '../../src/config';
 
 /** In-memory stand-in for the Prisma repository. */
 class FakeUserRepository implements UserRepository {
@@ -17,11 +19,13 @@ class FakeUserRepository implements UserRepository {
   }
 }
 
+const authConfig: AuthConfig = { jwtSecret: 'unit-test-secret', jwtExpiresIn: '1h' };
+
 describe('AuthService.register', () => {
   let service: AuthService;
 
   beforeEach(() => {
-    service = new AuthService(new FakeUserRepository());
+    service = new AuthService(new FakeUserRepository(), authConfig);
   });
 
   it('returns the public user without the password hash', async () => {
@@ -41,6 +45,35 @@ describe('AuthService.register', () => {
 
     await expect(service.register('buyer@example.com', 'other-pass')).rejects.toBeInstanceOf(
       ConflictError,
+    );
+  });
+});
+
+describe('AuthService.login', () => {
+  let service: AuthService;
+
+  beforeEach(async () => {
+    service = new AuthService(new FakeUserRepository(), authConfig);
+    await service.register('buyer@example.com', 'secret123');
+  });
+
+  it('returns a token signed with the configured secret', async () => {
+    const { token, user } = await service.login('buyer@example.com', 'secret123');
+
+    const payload = jwt.verify(token, authConfig.jwtSecret) as jwt.JwtPayload;
+    expect(payload.sub).toBe(String(user.id));
+    expect(payload.role).toBe('user');
+  });
+
+  it('throws UnauthorizedError for a wrong password', async () => {
+    await expect(service.login('buyer@example.com', 'wrong-pass')).rejects.toBeInstanceOf(
+      UnauthorizedError,
+    );
+  });
+
+  it('throws UnauthorizedError for an unknown email', async () => {
+    await expect(service.login('nobody@example.com', 'secret123')).rejects.toBeInstanceOf(
+      UnauthorizedError,
     );
   });
 });
