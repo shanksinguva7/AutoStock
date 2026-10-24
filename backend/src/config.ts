@@ -15,6 +15,19 @@ export function loadAuthConfig(env: NodeJS.ProcessEnv = process.env): AuthConfig
   };
 }
 
+export interface AdminCredentials {
+  email: string;
+  password: string;
+}
+
+/** Reads the demo admin account the seed script creates. */
+export function loadAdminCredentials(env: NodeJS.ProcessEnv = process.env): AdminCredentials {
+  return {
+    email: requireEnv(env, 'ADMIN_EMAIL'),
+    password: requireEnv(env, 'ADMIN_PASSWORD'),
+  };
+}
+
 function requireEnv(env: NodeJS.ProcessEnv, name: string): string {
   const value = env[name];
   if (!value) {

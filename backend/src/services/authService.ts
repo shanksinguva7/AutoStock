@@ -37,6 +37,21 @@ export class AuthService {
   }
 
   /**
+   * Creates an admin with these credentials unless the email already exists.
+   * Safe to call repeatedly, which is what makes the seed script idempotent.
+   */
+  async ensureAdmin(email: string, password: string): Promise<{ user: PublicUser; created: boolean }> {
+    const normalisedEmail = normaliseEmail(email);
+    const existing = await this.users.findByEmail(normalisedEmail);
+    if (existing) {
+      return { user: toPublicUser(existing), created: false };
+    }
+    const passwordHash = await bcrypt.hash(password, BCRYPT_ROUNDS);
+    const user = await this.users.create({ email: normalisedEmail, passwordHash, role: 'admin' });
+    return { user: toPublicUser(user), created: true };
+  }
+
+  /**
    * Verifies credentials and issues a signed JWT carrying the user id (`sub`) and role.
    * @throws UnauthorizedError with the same message for unknown email and wrong password,
    * so callers cannot tell which emails are registered.

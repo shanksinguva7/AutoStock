@@ -9,7 +9,8 @@ export interface User {
   role: Role;
 }
 
-export type NewUser = Pick<User, 'email' | 'passwordHash'>;
+/** Role is optional: the database defaults it to 'user'. */
+export type NewUser = Pick<User, 'email' | 'passwordHash'> & { role?: Role };
 
 export interface UserRepository {
   findByEmail(email: string): Promise<User | null>;

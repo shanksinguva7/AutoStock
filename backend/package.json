@@ -7,6 +7,7 @@
     "start": "node dist/server.js",
     "test": "jest --runInBand",
     "db:push": "prisma db push",
+    "db:seed": "tsx src/scripts/seed.ts",
     "prisma:generate": "prisma generate"
   },
   "description": "Car dealership inventory API",

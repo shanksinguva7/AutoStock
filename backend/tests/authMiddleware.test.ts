@@ -70,10 +70,8 @@ describe('requireAuth middleware', () => {
   });
 
   it('returns 401 for an expired token', async () => {
-    const expired = signToken({ role: 'user', exp: Math.floor(Date.now() / 1000) - 60 }, {
-      subject: '7',
-      expiresIn: undefined,
-    });
+    const ONE_MINUTE_AGO = -60;
+    const expired = signToken({ role: 'user' }, { subject: '7', expiresIn: ONE_MINUTE_AGO });
 
     const res = await request(app).get('/protected').set('Authorization', `Bearer ${expired}`);
 
