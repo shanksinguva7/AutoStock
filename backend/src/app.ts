@@ -19,8 +19,8 @@ export function createApp(db: PrismaClient): Express {
   const healthController = new HealthController(new HealthService(new PrismaHealthRepository(db)));
   app.use('/health', healthRoutes(healthController));
 
-  const authController = new AuthController(new AuthService(new PrismaUserRepository(db), loadAuthConfig()));
-  app.use('/api/auth', authRoutes(authController));
+  const authService = new AuthService(new PrismaUserRepository(db), loadAuthConfig());
+  app.use('/api/auth', authRoutes(new AuthController(authService)));
 
   // Must be registered last so it catches errors from every route above.
   app.use(errorHandler);
