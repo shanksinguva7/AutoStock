@@ -1,4 +1,4 @@
-import { loadAuthConfig } from '../../src/config';
+import { loadAdminCredentials, loadAuthConfig } from '../../src/config';
 
 describe('loadAuthConfig', () => {
   it('reads the JWT secret and expiry from the environment', () => {
@@ -13,5 +13,18 @@ describe('loadAuthConfig', () => {
 
   it('throws when JWT_EXPIRES_IN is missing', () => {
     expect(() => loadAuthConfig({ JWT_SECRET: 'from-env' })).toThrow(/JWT_EXPIRES_IN/);
+  });
+});
+
+describe('loadAdminCredentials', () => {
+  it('reads the seed admin email and password from the environment', () => {
+    const credentials = loadAdminCredentials({ ADMIN_EMAIL: 'a@b.test', ADMIN_PASSWORD: 'pw-123456' });
+
+    expect(credentials).toEqual({ email: 'a@b.test', password: 'pw-123456' });
+  });
+
+  it('throws when ADMIN_EMAIL or ADMIN_PASSWORD is missing', () => {
+    expect(() => loadAdminCredentials({ ADMIN_EMAIL: 'a@b.test' })).toThrow(/ADMIN_PASSWORD/);
+    expect(() => loadAdminCredentials({ ADMIN_PASSWORD: 'pw-123456' })).toThrow(/ADMIN_EMAIL/);
   });
 });
