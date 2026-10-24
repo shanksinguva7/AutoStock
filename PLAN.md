@@ -23,7 +23,7 @@ Tick a box only when the tests pass and the commits are made. One slice at a tim
 - [x] 1. Health check: `GET /health` returns 200; DB connection test
 - [x] 2. Register: 201 + no passwordHash; 400 on bad email or short password; 409 duplicate email; password stored hashed; default role `user`
 - [x] 3. Login: 200 + JWT for valid credentials; 401 for wrong password or unknown email
-- [ ] 4. Auth middleware + admin guard: 401 without or with bad token; 403 for non-admin on an admin route; seed script creates admin
+- [x] 4. Auth middleware + admin guard: 401 without or with bad token; 403 for non-admin on an admin route; seed script creates admin
 - [ ] 5. Create vehicle (admin): 201; 400 for missing fields, negative price, non-integer quantity; 401/403 cases
 - [ ] 6. List vehicles: 200 returns all including quantity 0; 401 without token
 - [ ] 7. Search: each filter alone (make, model, category, price range); combined filters; case-insensitive; empty result is `[]`; invalid price is 400; route not shadowed by `/:id`

@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { User, UserRepository } from '../repositories/userRepository';
+import { Role, User, UserRepository } from '../repositories/userRepository';
 import { ConflictError, UnauthorizedError } from '../errors';
 import { AuthConfig } from '../config';
 
@@ -31,9 +31,7 @@ export class AuthService {
     if (await this.users.findByEmail(normalisedEmail)) {
       throw new ConflictError('Email is already registered');
     }
-    const passwordHash = await bcrypt.hash(password, BCRYPT_ROUNDS);
-    const user = await this.users.create({ email: normalisedEmail, passwordHash });
-    return toPublicUser(user);
+    return toPublicUser(await this.createUser(normalisedEmail, password, 'user'));
   }
 
   /**
@@ -46,8 +44,7 @@ export class AuthService {
     if (existing) {
       return { user: toPublicUser(existing), created: false };
     }
-    const passwordHash = await bcrypt.hash(password, BCRYPT_ROUNDS);
-    const user = await this.users.create({ email: normalisedEmail, passwordHash, role: 'admin' });
+    const user = await this.createUser(normalisedEmail, password, 'admin');
     return { user: toPublicUser(user), created: true };
   }
 
@@ -67,6 +64,11 @@ export class AuthService {
       expiresIn: this.config.jwtExpiresIn as jwt.SignOptions['expiresIn'],
     });
     return { token, user: toPublicUser(user) };
+  }
+
+  private async createUser(email: string, password: string, role: Role): Promise<User> {
+    const passwordHash = await bcrypt.hash(password, BCRYPT_ROUNDS);
+    return this.users.create({ email, passwordHash, role });
   }
 }
 

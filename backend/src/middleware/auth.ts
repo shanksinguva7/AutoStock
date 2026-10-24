@@ -8,6 +8,7 @@ const BEARER_PREFIX = 'Bearer ';
 // Pinned so a token cannot pick its own algorithm (e.g. "none" or a different HMAC).
 const ALLOWED_ALGORITHMS: jwt.Algorithm[] = ['HS256'];
 const ROLES: readonly Role[] = ['user', 'admin'];
+const INVALID_TOKEN = 'Invalid or expired token';
 
 export interface AuthUser {
   id: number;
@@ -44,16 +45,23 @@ export function getAuthUser(res: Response): AuthUser {
 }
 
 function verifyToken(token: string, secret: string): AuthUser {
-  let payload: string | jwt.JwtPayload;
+  const payload = verifySignature(token, secret);
+  const id = Number(payload.sub);
+  // A correctly signed token can still carry a bad payload, so check its shape too.
+  if (!Number.isInteger(id) || !ROLES.includes(payload.role)) {
+    throw new UnauthorizedError(INVALID_TOKEN);
+  }
+  return { id, role: payload.role };
+}
+
+function verifySignature(token: string, secret: string): jwt.JwtPayload {
   try {
-    payload = jwt.verify(token, secret, { algorithms: ALLOWED_ALGORITHMS });
+    const payload = jwt.verify(token, secret, { algorithms: ALLOWED_ALGORITHMS });
+    if (typeof payload === 'object') {
+      return payload;
+    }
   } catch {
-    throw new UnauthorizedError('Invalid or expired token');
+    // Fall through: bad signature, expiry and malformed tokens all get the same 401.
   }
-  const id = typeof payload === 'object' ? Number(payload.sub) : NaN;
-  const role = typeof payload === 'object' ? payload.role : undefined;
-  if (!Number.isInteger(id) || !ROLES.includes(role)) {
-    throw new UnauthorizedError('Invalid or expired token');
-  }
-  return { id, role };
+  throw new UnauthorizedError(INVALID_TOKEN);
 }
