@@ -17,6 +17,12 @@ export class ValidationError extends AppError {
   }
 }
 
+export class UnauthorizedError extends AppError {
+  constructor(message: string) {
+    super(message, HttpStatus.UNAUTHORIZED);
+  }
+}
+
 export class ConflictError extends AppError {
   constructor(message: string) {
     super(message, HttpStatus.CONFLICT);

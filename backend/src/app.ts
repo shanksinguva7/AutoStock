@@ -9,6 +9,7 @@ import { AuthService } from './services/authService';
 import { AuthController } from './controllers/authController';
 import { authRoutes } from './routes/authRoutes';
 import { errorHandler } from './middleware/errorHandler';
+import { loadAuthConfig } from './config';
 
 /** Builds the Express app. The DB client is injected so tests can pass their own. */
 export function createApp(db: PrismaClient): Express {
@@ -18,7 +19,7 @@ export function createApp(db: PrismaClient): Express {
   const healthController = new HealthController(new HealthService(new PrismaHealthRepository(db)));
   app.use('/health', healthRoutes(healthController));
 
-  const authController = new AuthController(new AuthService(new PrismaUserRepository(db)));
+  const authController = new AuthController(new AuthService(new PrismaUserRepository(db), loadAuthConfig()));
   app.use('/api/auth', authRoutes(authController));
 
   // Must be registered last so it catches errors from every route above.
