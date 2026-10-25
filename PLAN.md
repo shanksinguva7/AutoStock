@@ -41,7 +41,7 @@ Tick a box only when the tests pass and the commits are made. One slice at a tim
 - [x] Search and filter UI (make, model, category, price range) wired to `/api/vehicles/search`
 - [x] Purchase button: disabled at quantity 0; list refreshes after purchase; success/error toast
 - [x] Admin panel: add, edit, delete (with confirm), restock; hidden from non-admins
-- [ ] Responsive check at phone, tablet, desktop widths (use Playwright MCP); fix issues
+- [x] Responsive check at phone, tablet, desktop widths (use Playwright MCP); fix issues
 - [x] Component tests: forms, disabled Purchase, admin gate; add frontend job to CI
 
 ## Phase 3 — Documentation and delivery
