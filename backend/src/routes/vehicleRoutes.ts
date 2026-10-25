@@ -10,6 +10,7 @@ export function vehicleRoutes(controller: VehicleController, requireAuth: Reques
   // Registered before any /:id route so "search" is never captured as a vehicle id.
   router.get('/search', controller.search);
   router.post('/', requireAdmin, controller.create);
+  router.put('/:id', requireAdmin, controller.update);
   router.post('/:id/purchase', controller.purchase);
   router.post('/:id/restock', requireAdmin, controller.restock);
   return router;

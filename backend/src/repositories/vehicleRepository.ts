@@ -36,6 +36,8 @@ export interface VehicleRepository {
   decrementIfInStock(id: number): Promise<Vehicle | null>;
   /** Adds `amount` units to the stock. Returns the updated vehicle, or null for an unknown id. */
   incrementQuantity(id: number, amount: number): Promise<Vehicle | null>;
+  /** Replaces every field of a vehicle. Returns the updated vehicle, or null for an unknown id. */
+  update(id: number, data: NewVehicle): Promise<Vehicle | null>;
 }
 
 export class PrismaVehicleRepository implements VehicleRepository {
@@ -89,6 +91,17 @@ export class PrismaVehicleRepository implements VehicleRepository {
         data: { quantity: { increment: amount } },
       });
       return toVehicle(row);
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === RECORD_NOT_FOUND) {
+        return null;
+      }
+      throw error;
+    }
+  }
+
+  async update(id: number, data: NewVehicle): Promise<Vehicle | null> {
+    try {
+      return toVehicle(await this.db.vehicle.update({ where: { id }, data }));
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === RECORD_NOT_FOUND) {
         return null;

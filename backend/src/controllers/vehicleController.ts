@@ -64,6 +64,13 @@ export class VehicleController {
     res.status(HttpStatus.OK).json(await this.vehicleService.search(filters));
   };
 
+  // PUT replaces the whole vehicle, so it uses the create rules; unknown keys such as id are dropped.
+  update = async (req: Request, res: Response): Promise<void> => {
+    const id = parseVehicleId(req);
+    const data = parseOrThrow(createVehicleSchema, req.body);
+    res.status(HttpStatus.OK).json(await this.vehicleService.update(id, data));
+  };
+
   purchase = async (req: Request, res: Response): Promise<void> => {
     res.status(HttpStatus.OK).json(await this.vehicleService.purchase(parseVehicleId(req)));
   };

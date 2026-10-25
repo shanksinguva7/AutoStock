@@ -21,8 +21,16 @@ export class VehicleService {
     return this.vehicles.search(filters);
   }
 
-  async update(_id: number, _data: NewVehicle): Promise<Vehicle> {
-    throw new Error('Not implemented');
+  /**
+   * Replaces every field of a vehicle. Input is expected to be validated already.
+   * @throws NotFoundError when no vehicle has this id.
+   */
+  async update(id: number, data: NewVehicle): Promise<Vehicle> {
+    const updated = await this.vehicles.update(id, data);
+    if (!updated) {
+      throw new NotFoundError(VEHICLE_NOT_FOUND);
+    }
+    return updated;
   }
 
   /**
