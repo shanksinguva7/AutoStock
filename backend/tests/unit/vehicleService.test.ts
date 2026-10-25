@@ -37,6 +37,15 @@ class FakeVehicleRepository implements VehicleRepository {
     vehicle.quantity += amount;
     return { ...vehicle };
   }
+
+  // Simplified in-memory version of the real filter semantics.
+  async search(filters: { make?: string; maxPrice?: number }): Promise<Vehicle[]> {
+    return this.vehicles.filter(
+      (vehicle) =>
+        (filters.make === undefined || vehicle.make.toLowerCase().includes(filters.make.toLowerCase())) &&
+        (filters.maxPrice === undefined || vehicle.price <= filters.maxPrice),
+    );
+  }
 }
 
 const corolla: NewVehicle = { make: 'Toyota', model: 'Corolla', category: 'Sedan', price: 20000, quantity: 5 };
@@ -152,5 +161,35 @@ describe('VehicleService.restock', () => {
     const UNKNOWN_ID = 42;
 
     await expect(service.restock(UNKNOWN_ID, 1)).rejects.toMatchObject({ status: 404 });
+  });
+});
+
+describe('VehicleService.search', () => {
+  let repository: FakeVehicleRepository;
+  let service: VehicleService;
+
+  beforeEach(async () => {
+    repository = new FakeVehicleRepository();
+    service = new VehicleService(repository);
+    await repository.create(corolla);
+    await repository.create({ ...corolla, make: 'Honda', model: 'Civic', price: 22000, quantity: 0 });
+  });
+
+  it('returns the vehicles the repository matches for the given filters', async () => {
+    await expect(service.search({ make: 'honda' })).resolves.toEqual([
+      { id: 2, ...corolla, make: 'Honda', model: 'Civic', price: 22000, quantity: 0 },
+    ]);
+  });
+
+  it('passes combined filters through to the repository', async () => {
+    await expect(service.search({ make: 'o', maxPrice: 21000 })).resolves.toEqual([{ id: 1, ...corolla }]);
+  });
+
+  it('returns every vehicle when no filters are given', async () => {
+    await expect(service.search({})).resolves.toHaveLength(2);
+  });
+
+  it('returns an empty list when nothing matches', async () => {
+    await expect(service.search({ make: 'Ford' })).resolves.toEqual([]);
   });
 });

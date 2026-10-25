@@ -16,6 +16,10 @@ export class VehicleService {
     return this.vehicles.findAll();
   }
 
+  async search(_filters: object): Promise<Vehicle[]> {
+    throw new Error('Not implemented');
+  }
+
   /**
    * Sells one unit of a vehicle.
    * @throws NotFoundError when no vehicle has this id.
