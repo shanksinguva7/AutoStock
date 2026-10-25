@@ -85,11 +85,12 @@ Backend (`backend/.env`, copied from `backend/.env.example`; `.env` is git-ignor
 | `ADMIN_EMAIL` | Email of the demo admin that `npm run db:seed` creates. Needed by the seed script only. |
 | `ADMIN_PASSWORD` | Password for that admin. Needed by the seed script only. |
 
-Frontend (`frontend/.env`, optional, copied from `frontend/.env.example`; dev server only):
+Frontend (`frontend/.env`, optional, copied from `frontend/.env.example`):
 
 | Name | Purpose |
 | --- | --- |
-| `VITE_API_PROXY_TARGET` | Where the Vite dev server forwards `/api` requests. Optional, defaults to `http://localhost:4000`. A value set in the shell overrides the `.env` file. |
+| `VITE_API_PROXY_TARGET` | Where the Vite dev server forwards `/api` requests. Dev server only. Optional, defaults to `http://localhost:4000`. A value set in the shell overrides the `.env` file. |
+| `VITE_API_BASE_URL` | Full API origin for a hosted build, e.g. `https://autostock-api.onrender.com`. Baked in at build time, so set it before `npm run build`. Leave empty locally: requests then stay relative and go through the dev proxy. |
 
 ## Seeded Admin Login
 
