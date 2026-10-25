@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  backend:
+    name: Backend tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    # Fake, test-only values. Names match backend/.env.example; nothing here is a real secret.
+    env:
+      DATABASE_URL: file:./test.db
+      JWT_SECRET: ci-fake-jwt-secret-not-for-production
+      JWT_EXPIRES_IN: 1h
+      ADMIN_EMAIL: admin@autostock.test
+      ADMIN_PASSWORD: ci-fake-admin-password
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v5
+
+      # No "engines" field or .nvmrc in the repo, so use the current Node LTS.
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: lts/*
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      # Same command the Jest globalSetup runs: build prisma/test.db from the schema.
+      - name: Create test database
+        run: npx prisma db push --skip-generate
+
+      - name: Run tests
+        run: npm test
+
+  # ---------------------------------------------------------------------------
+  # FRONTEND JOB: add here once frontend/ exists (Phase 2).
+  # Expected shape: a `frontend` job with working-directory `frontend`,
+  # the same Node setup (cache-dependency-path: frontend/package-lock.json),
+  # then `npm ci` and `npm test`.
+  # ---------------------------------------------------------------------------
