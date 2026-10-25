@@ -1,10 +1,14 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ApiError, apiRequest } from './client';
 import { saveSession } from '../auth/session';
 import { mockFetch } from '../test/mockFetch';
 import { userSession } from '../test/fixtures';
 
 describe('apiRequest', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
   it('sends a JSON body and returns the parsed response', async () => {
     const fetchMock = mockFetch({ status: 200, body: { ok: true } });
 
@@ -48,5 +52,32 @@ describe('apiRequest', () => {
     mockFetch({ status: 204 });
 
     await expect(apiRequest('/api/vehicles/1', { method: 'DELETE' })).resolves.toBeUndefined();
+  });
+
+  it('prefixes the path with VITE_API_BASE_URL so a hosted frontend can reach the API on another domain', async () => {
+    vi.stubEnv('VITE_API_BASE_URL', 'https://api.example.test');
+    const fetchMock = mockFetch({ status: 200, body: [] });
+
+    await apiRequest('/api/vehicles');
+
+    expect(fetchMock.mock.calls[0][0]).toBe('https://api.example.test/api/vehicles');
+  });
+
+  it('ignores a trailing slash on VITE_API_BASE_URL', async () => {
+    vi.stubEnv('VITE_API_BASE_URL', 'https://api.example.test/');
+    const fetchMock = mockFetch({ status: 200, body: [] });
+
+    await apiRequest('/api/vehicles');
+
+    expect(fetchMock.mock.calls[0][0]).toBe('https://api.example.test/api/vehicles');
+  });
+
+  it('keeps the path relative when VITE_API_BASE_URL is empty, so the dev proxy still works', async () => {
+    vi.stubEnv('VITE_API_BASE_URL', '');
+    const fetchMock = mockFetch({ status: 200, body: [] });
+
+    await apiRequest('/api/vehicles');
+
+    expect(fetchMock.mock.calls[0][0]).toBe('/api/vehicles');
   });
 });
