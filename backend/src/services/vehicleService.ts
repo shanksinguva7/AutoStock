@@ -33,6 +33,10 @@ export class VehicleService {
     return updated;
   }
 
+  async delete(_id: number): Promise<void> {
+    throw new Error('Not implemented');
+  }
+
   /**
    * Sells one unit of a vehicle.
    * @throws NotFoundError when no vehicle has this id.

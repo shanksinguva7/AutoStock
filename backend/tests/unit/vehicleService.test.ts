@@ -48,6 +48,15 @@ class FakeVehicleRepository implements VehicleRepository {
     return { ...vehicle };
   }
 
+  async delete(id: number): Promise<Vehicle | null> {
+    const index = this.vehicles.findIndex((vehicle) => vehicle.id === id);
+    if (index === -1) {
+      return null;
+    }
+    const [removed] = this.vehicles.splice(index, 1);
+    return removed;
+  }
+
   async search(filters: VehicleFilters): Promise<Vehicle[]> {
     return this.vehicles.filter(
       (vehicle) =>
@@ -224,5 +233,35 @@ describe('VehicleService.update', () => {
     const UNKNOWN_ID = 42;
 
     await expect(service.update(UNKNOWN_ID, civic)).rejects.toMatchObject({ status: 404 });
+  });
+});
+
+describe('VehicleService.delete', () => {
+  let repository: FakeVehicleRepository;
+  let service: VehicleService;
+
+  beforeEach(() => {
+    repository = new FakeVehicleRepository();
+    service = new VehicleService(repository);
+  });
+
+  it('removes the vehicle from the repository', async () => {
+    const { id } = await repository.create(corolla);
+
+    await expect(service.delete(id)).resolves.toBeUndefined();
+    expect(repository.vehicles).toEqual([]);
+  });
+
+  it('rejects with a 404 not found when the vehicle does not exist', async () => {
+    const UNKNOWN_ID = 42;
+
+    await expect(service.delete(UNKNOWN_ID)).rejects.toMatchObject({ status: 404 });
+  });
+
+  it('rejects with a 404 not found the second time the same vehicle is deleted', async () => {
+    const { id } = await repository.create(corolla);
+    await service.delete(id).catch(() => undefined);
+
+    await expect(service.delete(id)).rejects.toMatchObject({ status: 404 });
   });
 });
