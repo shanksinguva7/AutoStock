@@ -1,6 +1,8 @@
 import { ConflictError, NotFoundError } from '../errors';
 import { NewVehicle, Vehicle, VehicleRepository } from '../repositories/vehicleRepository';
 
+const VEHICLE_NOT_FOUND = 'Vehicle not found';
+
 export class VehicleService {
   constructor(private readonly vehicles: VehicleRepository) {}
 
@@ -26,7 +28,7 @@ export class VehicleService {
     }
     // Nothing changed, so look up the vehicle only to pick the right error.
     if (!(await this.vehicles.findById(id))) {
-      throw new NotFoundError('Vehicle not found');
+      throw new NotFoundError(VEHICLE_NOT_FOUND);
     }
     throw new ConflictError('Vehicle is out of stock');
   }
@@ -38,7 +40,7 @@ export class VehicleService {
   async restock(id: number, amount: number): Promise<Vehicle> {
     const updated = await this.vehicles.incrementQuantity(id, amount);
     if (!updated) {
-      throw new NotFoundError('Vehicle not found');
+      throw new NotFoundError(VEHICLE_NOT_FOUND);
     }
     return updated;
   }
