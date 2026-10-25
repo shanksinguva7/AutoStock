@@ -72,6 +72,11 @@ export class VehicleController {
     res.status(HttpStatus.OK).json(await this.vehicleService.update(id, data));
   };
 
+  delete = async (req: Request, res: Response): Promise<void> => {
+    await this.vehicleService.delete(parseVehicleId(req));
+    res.status(HttpStatus.NO_CONTENT).end();
+  };
+
   purchase = async (req: Request, res: Response): Promise<void> => {
     res.status(HttpStatus.OK).json(await this.vehicleService.purchase(parseVehicleId(req)));
   };

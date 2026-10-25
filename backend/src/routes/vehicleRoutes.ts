@@ -11,6 +11,7 @@ export function vehicleRoutes(controller: VehicleController, requireAuth: Reques
   router.get('/search', controller.search);
   router.post('/', requireAdmin, controller.create);
   router.put('/:id', requireAdmin, controller.update);
+  router.delete('/:id', requireAdmin, controller.delete);
   router.post('/:id/purchase', controller.purchase);
   router.post('/:id/restock', requireAdmin, controller.restock);
   return router;

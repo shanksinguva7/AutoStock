@@ -33,8 +33,15 @@ export class VehicleService {
     return updated;
   }
 
-  async delete(_id: number): Promise<void> {
-    throw new Error('Not implemented');
+  /**
+   * Removes a vehicle from the inventory.
+   * @throws NotFoundError when no vehicle has this id, including one already deleted.
+   */
+  async delete(id: number): Promise<void> {
+    const deleted = await this.vehicles.delete(id);
+    if (!deleted) {
+      throw new NotFoundError(VEHICLE_NOT_FOUND);
+    }
   }
 
   /**

@@ -38,6 +38,8 @@ export interface VehicleRepository {
   incrementQuantity(id: number, amount: number): Promise<Vehicle | null>;
   /** Replaces every field of a vehicle. Returns the updated vehicle, or null for an unknown id. */
   update(id: number, data: NewVehicle): Promise<Vehicle | null>;
+  /** Removes a vehicle. Returns the deleted vehicle, or null for an unknown id. */
+  delete(id: number): Promise<Vehicle | null>;
 }
 
 export class PrismaVehicleRepository implements VehicleRepository {
@@ -92,6 +94,10 @@ export class PrismaVehicleRepository implements VehicleRepository {
 
   async update(id: number, data: NewVehicle): Promise<Vehicle | null> {
     return nullIfNotFound(this.db.vehicle.update({ where: { id }, data }));
+  }
+
+  async delete(id: number): Promise<Vehicle | null> {
+    return nullIfNotFound(this.db.vehicle.delete({ where: { id } }));
   }
 }
 
