@@ -215,7 +215,7 @@ Frontend coverage is not measured (no coverage provider is installed for Vitest)
 - **Backend tests:** `npm ci`, `npx prisma generate`, `npx prisma db push --skip-generate` to create the test database, then `npm test`. It uses fake, test-only env values set in the workflow; no real secrets are involved.
 - **Frontend tests:** `npm ci`, then `npm test`. No env is needed because the tests mock `fetch`.
 
-The first CI run failed before any test ran: `ts-jest` could not find `jest-util`, which the lockfile only had as an optional peer entry that `npm ci` on npm 11 leaves out. Commit `54a742a` fixed it by adding `jest-util` as a real dev dependency. The frontend job was added later, in commit `878fc83`.
+Run #1 (commit `7d812b8`) failed before any test ran: `ts-jest` could not find `jest-util`, a missing dev dependency (the lockfile only had it as an optional peer entry, which `npm ci` on npm 11 leaves out). The next commit, `54a742a`, added `jest-util` as a real dev dependency, and run #2 passed. The frontend job was added later, in commit `878fc83`.
 
 ## My AI Usage
 
