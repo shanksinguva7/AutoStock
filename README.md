@@ -145,7 +145,6 @@ All request and response bodies are JSON. Errors always look like `{ "error": "m
 | ![Vehicle dashboard](docs/screenshots/dashboard.png) | **Dashboard.** Vehicle cards with price, stock and a Purchase button that is disabled at quantity 0. |
 | ![Search results](docs/screenshots/search.png) | **Search.** Make, model, category and price range filters narrowing the list. |
 | ![Admin panel](docs/screenshots/admin.png) | **Admin panel.** Add/edit form beside the vehicle list with restock, edit and delete. |
-| ![Mobile view](docs/screenshots/mobile.png) | **Mobile.** The dashboard at phone width, stacked into one column. |
 
 ## Test Report
 
