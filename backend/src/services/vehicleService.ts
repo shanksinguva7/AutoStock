@@ -1,3 +1,4 @@
+import { NotFoundError, ConflictError } from '../errors';
 import { NewVehicle, Vehicle, VehicleRepository } from '../repositories/vehicleRepository';
 
 export class VehicleService {
@@ -13,7 +14,20 @@ export class VehicleService {
     return this.vehicles.findAll();
   }
 
-  async purchase(_id: number): Promise<Vehicle> {
-    throw new Error('Not implemented');
+  /**
+   * Sells one unit of a vehicle.
+   * @throws NotFoundError when no vehicle has this id.
+   * @throws ConflictError when the vehicle is out of stock.
+   */
+  async purchase(id: number): Promise<Vehicle> {
+    const updated = await this.vehicles.decrementIfInStock(id);
+    if (updated) {
+      return updated;
+    }
+    // Nothing changed, so look up the vehicle only to pick the right error.
+    if (!(await this.vehicles.findById(id))) {
+      throw new NotFoundError('Vehicle not found');
+    }
+    throw new ConflictError('Vehicle is out of stock');
   }
 }

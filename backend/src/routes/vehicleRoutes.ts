@@ -8,5 +8,6 @@ export function vehicleRoutes(controller: VehicleController, requireAuth: Reques
   router.use(requireAuth);
   router.get('/', controller.list);
   router.post('/', requireAdmin, controller.create);
+  router.post('/:id/purchase', controller.purchase);
   return router;
 }

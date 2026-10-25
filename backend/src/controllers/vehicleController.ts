@@ -16,6 +16,11 @@ const createVehicleSchema = z.object({
   quantity: z.number().int().nonnegative(),
 });
 
+// Route params arrive as strings; coerce, then require a positive whole number.
+const vehicleIdSchema = z.object({
+  id: z.coerce.number().int().positive(),
+});
+
 export class VehicleController {
   constructor(private readonly vehicleService: VehicleService) {}
 
@@ -27,5 +32,10 @@ export class VehicleController {
 
   list = async (_req: Request, res: Response): Promise<void> => {
     res.status(HttpStatus.OK).json(await this.vehicleService.list());
+  };
+
+  purchase = async (req: Request, res: Response): Promise<void> => {
+    const { id } = parseOrThrow(vehicleIdSchema, req.params);
+    res.status(HttpStatus.OK).json(await this.vehicleService.purchase(id));
   };
 }
