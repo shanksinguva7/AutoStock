@@ -57,7 +57,15 @@ Check it is up: `GET http://localhost:4000/health` returns `{"status":"ok","data
 
 Tests: `npm test` runs the Jest suite (it builds its own `prisma/test.db` and sets its own env, so it never touches `dev.db`), and `npm test -- --coverage` adds the coverage table.
 
-Production-style run: `npm run build` compiles `src/` to `dist/`, then `npm start` runs `dist/server.js` (it reads the same `.env`).
+Production-style run: `npm run build` generates the Prisma client and compiles `src/` to `dist/`, then `npm start` runs `dist/server.js` (it reads the same `.env`).
+
+Deployed (e.g. Render), use the tracked migrations instead of `db push`, and the compiled seed so no dev tool is needed at runtime. Each step is safe to repeat on every start:
+
+```bash
+npm run db:deploy && npm run db:seed:prod && npm start
+```
+
+`db:deploy` runs `prisma migrate deploy` and `db:seed:prod` runs `node dist/scripts/seed.js`. The build and `db:deploy` use the `prisma` and `typescript` dev dependencies, so the install step must include them (do not set `NODE_ENV=production` while installing). A local `dev.db` made with `db:push` has no migration history; start from a fresh file if you want to try `db:deploy` locally.
 
 ### Frontend
 
