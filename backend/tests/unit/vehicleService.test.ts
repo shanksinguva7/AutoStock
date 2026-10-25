@@ -1,5 +1,5 @@
 import { VehicleService } from '../../src/services/vehicleService';
-import { NewVehicle, Vehicle, VehicleRepository } from '../../src/repositories/vehicleRepository';
+import { NewVehicle, Vehicle, VehicleFilters, VehicleRepository } from '../../src/repositories/vehicleRepository';
 
 /** In-memory stand-in for the Prisma repository. */
 class FakeVehicleRepository implements VehicleRepository {
@@ -39,7 +39,7 @@ class FakeVehicleRepository implements VehicleRepository {
   }
 
   // Simplified in-memory version of the real filter semantics.
-  async search(filters: { make?: string; maxPrice?: number }): Promise<Vehicle[]> {
+  async search(filters: VehicleFilters): Promise<Vehicle[]> {
     return this.vehicles.filter(
       (vehicle) =>
         (filters.make === undefined || vehicle.make.toLowerCase().includes(filters.make.toLowerCase())) &&

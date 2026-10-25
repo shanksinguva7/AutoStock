@@ -46,9 +46,7 @@ export class PrismaVehicleRepository implements VehicleRepository {
   }
 
   async findAll(): Promise<Vehicle[]> {
-    // Ordered by id so the list is stable and new vehicles appear last.
-    const rows = await this.db.vehicle.findMany({ orderBy: { id: 'asc' } });
-    return rows.map(toVehicle);
+    return this.search({});
   }
 
   async search({ make, model, category, minPrice, maxPrice }: VehicleFilters): Promise<Vehicle[]> {
@@ -60,6 +58,7 @@ export class PrismaVehicleRepository implements VehicleRepository {
         category: { contains: category },
         price: { gte: minPrice, lte: maxPrice },
       },
+      // Ordered by id so results are stable and new vehicles appear last.
       orderBy: { id: 'asc' },
     });
     return rows.map(toVehicle);
