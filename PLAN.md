@@ -40,7 +40,7 @@ Tick a box only when the tests pass and the commits are made. One slice at a tim
 - [x] Vehicle dashboard: cards/table, loading + empty + error states
 - [x] Search and filter UI (make, model, category, price range) wired to `/api/vehicles/search`
 - [x] Purchase button: disabled at quantity 0; list refreshes after purchase; success/error toast
-- [ ] Admin panel: add, edit, delete (with confirm), restock; hidden from non-admins
+- [x] Admin panel: add, edit, delete (with confirm), restock; hidden from non-admins
 - [ ] Responsive check at phone, tablet, desktop widths (use Playwright MCP); fix issues
 - [ ] Component tests: forms, disabled Purchase, admin gate; add frontend job to CI
 
