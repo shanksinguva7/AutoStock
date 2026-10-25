@@ -21,6 +21,10 @@ const vehicleIdSchema = z.object({
   id: z.coerce.number().int().positive(),
 });
 
+const restockSchema = z.object({
+  amount: z.number().int().positive(),
+});
+
 export class VehicleController {
   constructor(private readonly vehicleService: VehicleService) {}
 
@@ -37,5 +41,11 @@ export class VehicleController {
   purchase = async (req: Request, res: Response): Promise<void> => {
     const { id } = parseOrThrow(vehicleIdSchema, req.params);
     res.status(HttpStatus.OK).json(await this.vehicleService.purchase(id));
+  };
+
+  restock = async (req: Request, res: Response): Promise<void> => {
+    const { id } = parseOrThrow(vehicleIdSchema, req.params);
+    const { amount } = parseOrThrow(restockSchema, req.body);
+    res.status(HttpStatus.OK).json(await this.vehicleService.restock(id, amount));
   };
 }

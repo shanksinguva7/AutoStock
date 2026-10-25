@@ -1,4 +1,7 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
+
+// Prisma's error code for an update or delete whose target row does not exist.
+const RECORD_NOT_FOUND = 'P2025';
 
 export interface Vehicle {
   id: number;
@@ -20,6 +23,8 @@ export interface VehicleRepository {
    * Returns the updated vehicle, or null when nothing changed (unknown id or out of stock).
    */
   decrementIfInStock(id: number): Promise<Vehicle | null>;
+  /** Adds `amount` units to the stock. Returns the updated vehicle, or null for an unknown id. */
+  incrementQuantity(id: number, amount: number): Promise<Vehicle | null>;
 }
 
 export class PrismaVehicleRepository implements VehicleRepository {
@@ -49,6 +54,23 @@ export class PrismaVehicleRepository implements VehicleRepository {
       data: { quantity: { decrement: 1 } },
     });
     return count === 0 ? null : this.findById(id);
+  }
+
+  async incrementQuantity(id: number, amount: number): Promise<Vehicle | null> {
+    try {
+      // The database adds to its current value, so concurrent restocks and purchases
+      // never overwrite each other, and the returned row is the one this update wrote.
+      const row = await this.db.vehicle.update({
+        where: { id },
+        data: { quantity: { increment: amount } },
+      });
+      return toVehicle(row);
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === RECORD_NOT_FOUND) {
+        return null;
+      }
+      throw error;
+    }
   }
 }
 

@@ -31,7 +31,15 @@ export class VehicleService {
     throw new ConflictError('Vehicle is out of stock');
   }
 
-  async restock(_id: number, _amount: number): Promise<Vehicle> {
-    throw new Error('Not implemented');
+  /**
+   * Adds units to a vehicle's stock. The amount is expected to be a validated positive integer.
+   * @throws NotFoundError when no vehicle has this id.
+   */
+  async restock(id: number, amount: number): Promise<Vehicle> {
+    const updated = await this.vehicles.incrementQuantity(id, amount);
+    if (!updated) {
+      throw new NotFoundError('Vehicle not found');
+    }
+    return updated;
   }
 }
