@@ -1,11 +1,10 @@
 import { useState, type FormEvent, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ApiError } from '../api/client';
+import { errorMessage } from '../api/client';
 import type { Credentials } from '../api/authApi';
 import type { FieldErrors } from '../auth/validation';
 import { TextField } from './TextField';
-
-const UNEXPECTED_ERROR = 'Something went wrong. Please try again.';
+import { primaryButton } from './styles';
 
 interface AuthFormProps {
   title: string;
@@ -49,7 +48,7 @@ export function AuthForm({
       await onSubmit({ email, password });
       navigate('/', { replace: true });
     } catch (error) {
-      setServerError(error instanceof ApiError ? error.message : UNEXPECTED_ERROR);
+      setServerError(errorMessage(error));
       setSubmitting(false);
     }
   }
@@ -85,7 +84,7 @@ export function AuthForm({
         <button
           type="submit"
           disabled={submitting}
-          className="w-full bg-ink py-2.5 text-sm font-medium text-canvas disabled:cursor-not-allowed disabled:bg-disabled disabled:text-ink-muted"
+          className={`w-full py-2.5 ${primaryButton}`}
         >
           {submitting ? submittingLabel : submitLabel}
         </button>

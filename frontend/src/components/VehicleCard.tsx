@@ -1,4 +1,5 @@
 import type { Vehicle } from '../api/vehiclesApi';
+import { primaryButton } from './styles';
 
 const priceFormat = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -34,7 +35,7 @@ export function VehicleCard({ vehicle, purchasing, onPurchase }: VehicleCardProp
         type="button"
         onClick={() => onPurchase(vehicle)}
         disabled={outOfStock || purchasing}
-        className="mt-5 w-full bg-ink py-2.5 text-sm font-medium text-canvas disabled:cursor-not-allowed disabled:bg-disabled disabled:text-ink-muted"
+        className={`mt-5 w-full py-2.5 ${primaryButton}`}
       >
         {outOfStock ? 'Out of stock' : purchasing ? 'Purchasing…' : 'Purchase'}
       </button>

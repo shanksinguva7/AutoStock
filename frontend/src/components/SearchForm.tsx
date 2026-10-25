@@ -1,6 +1,7 @@
 import type { FormEvent } from 'react';
 import type { SearchFilters } from '../api/vehiclesApi';
 import { TextField } from './TextField';
+import { primaryButton, secondaryButton } from './styles';
 
 interface SearchFormProps {
   filters: SearchFilters;
@@ -51,11 +52,11 @@ export function SearchForm({ filters, searching, onChange, onSearch, onClear }: 
         <button
           type="submit"
           disabled={searching}
-          className="flex-1 bg-ink py-2 text-sm font-medium text-canvas disabled:cursor-not-allowed disabled:bg-disabled disabled:text-ink-muted"
+          className={`flex-1 py-2 ${primaryButton}`}
         >
           Search
         </button>
-        <button type="button" onClick={onClear} className="flex-1 border border-line py-2 text-sm hover:border-ink">
+        <button type="button" onClick={onClear} className={`flex-1 py-2 ${secondaryButton}`}>
           Clear
         </button>
       </div>

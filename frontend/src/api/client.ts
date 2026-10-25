@@ -15,6 +15,13 @@ export class ApiError extends Error {
   }
 }
 
+const UNEXPECTED_ERROR_MESSAGE = 'Something went wrong. Please try again.';
+
+/** The text to show a user for a failed call: the server's message, or a generic one. */
+export function errorMessage(error: unknown): string {
+  return error instanceof ApiError ? error.message : UNEXPECTED_ERROR_MESSAGE;
+}
+
 export interface RequestOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
   body?: unknown;
