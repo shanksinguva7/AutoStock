@@ -2,14 +2,8 @@ import { useState, type FormEvent } from 'react';
 import type { Vehicle } from '../api/vehiclesApi';
 import { parseRestockAmount } from '../admin/vehicleValidation';
 import { TextField } from './TextField';
+import { formatPrice } from '../format';
 import { primaryButton, secondaryButton } from './styles';
-
-const priceFormat = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 2,
-});
 
 interface AdminVehicleRowProps {
   vehicle: Vehicle;
@@ -61,7 +55,7 @@ export function AdminVehicleRow({ vehicle, onEdit, onDelete, onRestock }: AdminV
           </h3>
         </div>
         <div className="text-right text-sm">
-          <p>{priceFormat.format(price)}</p>
+          <p>{formatPrice(price)}</p>
           <p className={quantity === 0 ? 'text-warning' : 'text-ink-muted'}>{quantity} in stock</p>
         </div>
       </div>

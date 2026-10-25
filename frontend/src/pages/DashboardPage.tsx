@@ -6,7 +6,7 @@ import { useToast } from '../components/Toast';
 import { AppHeader } from '../components/AppHeader';
 import { SearchForm } from '../components/SearchForm';
 import { VehicleCard } from '../components/VehicleCard';
-import { secondaryButton } from '../components/styles';
+import { VehicleListStates } from '../components/VehicleListStates';
 
 function hasFilters(filters: SearchFilters): boolean {
   return Object.values(filters).some((value) => value.trim() !== '');
@@ -57,36 +57,28 @@ export function DashboardPage() {
           onClear={clearFilters}
         />
         <section aria-busy={loading} className="mt-8">
-          {error ? (
-            <div role="alert" className="border border-error p-5 text-sm">
-              <p className="text-error">Could not load vehicles: {error}</p>
-              <button
-                type="button"
-                onClick={() => void load(appliedFilters)}
-                className={`mt-4 px-3 py-1.5 ${secondaryButton}`}
-              >
-                Try again
-              </button>
-            </div>
-          ) : vehicles === null ? (
-            <p className="text-ink-muted">Loading vehicles…</p>
-          ) : vehicles.length === 0 ? (
-            <p className="text-ink-muted">
-              {hasFilters(appliedFilters) ? 'No vehicles match your filters.' : 'No vehicles in the inventory yet.'}
-            </p>
-          ) : (
-            <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {vehicles.map((vehicle) => (
-                <li key={vehicle.id}>
-                  <VehicleCard
-                    vehicle={vehicle}
-                    purchasing={purchasingId === vehicle.id}
-                    onPurchase={(v) => void purchase(v)}
-                  />
-                </li>
-              ))}
-            </ul>
-          )}
+          <VehicleListStates
+            vehicles={vehicles}
+            error={error}
+            emptyMessage={
+              hasFilters(appliedFilters) ? 'No vehicles match your filters.' : 'No vehicles in the inventory yet.'
+            }
+            onRetry={() => void load(appliedFilters)}
+          >
+            {(loaded) => (
+              <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {loaded.map((vehicle) => (
+                  <li key={vehicle.id}>
+                    <VehicleCard
+                      vehicle={vehicle}
+                      purchasing={purchasingId === vehicle.id}
+                      onPurchase={(v) => void purchase(v)}
+                    />
+                  </li>
+                ))}
+              </ul>
+            )}
+          </VehicleListStates>
         </section>
       </main>
     </div>

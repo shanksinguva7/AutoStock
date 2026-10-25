@@ -14,7 +14,7 @@ import { useToast } from '../components/Toast';
 import { AppHeader } from '../components/AppHeader';
 import { VehicleForm } from '../components/VehicleForm';
 import { AdminVehicleRow } from '../components/AdminVehicleRow';
-import { secondaryButton } from '../components/styles';
+import { VehicleListStates } from '../components/VehicleListStates';
 
 export function AdminPage() {
   const showToast = useToast();
@@ -59,37 +59,29 @@ export function AdminPage() {
             />
           </div>
           <section aria-busy={loading} aria-label="Vehicles">
-            {error ? (
-              <div role="alert" className="border border-error p-5 text-sm">
-                <p className="text-error">Could not load vehicles: {error}</p>
-                <button
-                  type="button"
-                  onClick={() => void load(EMPTY_FILTERS)}
-                  className={`mt-4 px-3 py-1.5 ${secondaryButton}`}
-                >
-                  Try again
-                </button>
-              </div>
-            ) : vehicles === null ? (
-              <p className="text-ink-muted">Loading vehicles…</p>
-            ) : vehicles.length === 0 ? (
-              <p className="text-ink-muted">No vehicles in the inventory yet. Add the first one.</p>
-            ) : (
-              <ul className="space-y-3">
-                {vehicles.map((vehicle) => (
-                  <li key={vehicle.id}>
-                    <AdminVehicleRow
-                      vehicle={vehicle}
-                      onEdit={setEditing}
-                      onDelete={(v) => runChange(() => deleteVehicle(v.id), `Deleted ${v.make} ${v.model}`)}
-                      onRestock={(v, amount) =>
-                        runChange(() => restockVehicle(v.id, amount), `Restocked ${v.make} ${v.model}`)
-                      }
-                    />
-                  </li>
-                ))}
-              </ul>
-            )}
+            <VehicleListStates
+              vehicles={vehicles}
+              error={error}
+              emptyMessage="No vehicles in the inventory yet. Add the first one."
+              onRetry={() => void load(EMPTY_FILTERS)}
+            >
+              {(loaded) => (
+                <ul className="space-y-3">
+                  {loaded.map((vehicle) => (
+                    <li key={vehicle.id}>
+                      <AdminVehicleRow
+                        vehicle={vehicle}
+                        onEdit={setEditing}
+                        onDelete={(v) => runChange(() => deleteVehicle(v.id), `Deleted ${v.make} ${v.model}`)}
+                        onRestock={(v, amount) =>
+                          runChange(() => restockVehicle(v.id, amount), `Restocked ${v.make} ${v.model}`)
+                        }
+                      />
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </VehicleListStates>
           </section>
         </div>
       </main>

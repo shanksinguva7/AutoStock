@@ -1,12 +1,6 @@
 import type { Vehicle } from '../api/vehiclesApi';
+import { formatPrice } from '../format';
 import { primaryButton } from './styles';
-
-const priceFormat = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 2,
-});
 
 interface VehicleCardProps {
   vehicle: Vehicle;
@@ -27,7 +21,7 @@ export function VehicleCard({ vehicle, purchasing, onPurchase }: VehicleCardProp
       </h2>
       <dl className="mt-4 flex items-baseline justify-between text-sm">
         <dt className="sr-only">Price</dt>
-        <dd className="text-base">{priceFormat.format(price)}</dd>
+        <dd className="text-base">{formatPrice(price)}</dd>
         <dt className="sr-only">Stock</dt>
         <dd className={outOfStock ? 'text-warning' : 'text-ink-muted'}>{quantity} in stock</dd>
       </dl>
