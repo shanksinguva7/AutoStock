@@ -16,6 +16,15 @@ export class ApiError extends Error {
 }
 
 const UNEXPECTED_ERROR_MESSAGE = 'Something went wrong. Please try again.';
+const TRAILING_SLASHES = /\/+$/;
+
+/**
+ * The API origin from VITE_API_BASE_URL. Empty keeps paths relative, so local dev goes through the Vite proxy.
+ * Read on each call rather than at import so tests can stub it.
+ */
+function apiBaseUrl(): string {
+  return (import.meta.env.VITE_API_BASE_URL ?? '').replace(TRAILING_SLASHES, '');
+}
 
 /** The text to show a user for a failed call: the server's message, or a generic one. */
 export function errorMessage(error: unknown): string {
@@ -43,7 +52,7 @@ export async function apiRequest<T>(path: string, { method = 'GET', body }: Requ
 
   let response: Response;
   try {
-    response = await fetch(path, {
+    response = await fetch(`${apiBaseUrl()}${path}`, {
       method,
       headers,
       body: body === undefined ? undefined : JSON.stringify(body),
