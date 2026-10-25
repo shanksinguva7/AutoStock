@@ -218,4 +218,30 @@ Run #1 (commit `7d812b8`) failed before any test ran: `ts-jest` could not find `
 
 ## My AI Usage
 
-To be written by the author.
+### Tools & Workflow
+
+I leveraged Claude and Claude Code, treating them as distinct partners in my workflow. I used Claude primarily for high-level system architecture and brainstorming, translating my ideas into `claude.md` and `plan.md` context files. Because I was operating under a tight deadline, I utilized Claude Code as an execution multiplier to rapidly implement test cases and core logic based on those plans.
+
+### Prompting Strategy
+
+I structured my process by breaking the project down into manageable slices. Many of the specific execution prompts for Claude Code were actually drafted during my initial Claude planning chat, allowing me to scope the work and run it one slice at a time. I used the TCREI (Task, Context, Reference, Evaluate, Iterate) framework to shape my broader, foundational prompts so the AI had clear boundaries before writing code.
+
+### AI Interventions & Corrections
+
+While the AI executed well within its constraints, there were a few specific instances where I had to step in:
+
+* UI/UX Direction: When the AI defaulted to generic layouts, I fed it Bugatti’s design principles as a custom skill to enforce a premium, tailored aesthetic.
+* Version Control Hygiene: My slice 5 prompt accidentally left out my rule for commit attributions. I stepped in and manually amended those commits using `git rebase` to ensure I gave the AI proper co-author credit for where it had performed.
+* Dependency Management: My first CI run failed because `jest-util` was missing as a dev dependency. The tests had passed locally but failed on a clean runner, so I had Claude Code fix the dependency in the next commit.
+
+### Core Technical Learnings
+
+Working through this architecture solidified my understanding of several core concepts:
+
+* Test-Driven Development (TDD): Walking through the actual red, green, and refactor commit cycles showed me exactly how a failing test forces you to write only the necessary code and prevents regressions later.
+* Auth (Authentication vs. Authorization): Implementing the middleware clarified the practical difference: a missing or invalid token correctly throws a 401 (AuthN), whereas a logged-in standard user trying to hit an admin endpoint hits a 403 (AuthZ).
+* Concurrency: I learned that simply reading a database quantity and then writing the new value creates a race condition that can oversell the last car in stock. Using a single conditional atomic update fixes the issue entirely.
+
+### Retrospective
+
+If I had more time, I would spend it entirely at the drawing board solidifying the core System Design before generating a single line of code. Working with AI taught me that the quality of the final output is directly proportional to the rigor of the upfront architectural planning.
