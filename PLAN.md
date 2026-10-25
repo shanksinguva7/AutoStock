@@ -10,14 +10,13 @@ Tick a box only when the tests pass and the commits are made. One slice at a tim
 - Sun 3:00 - 5:00 pm: polish + screenshots
 - Sun 5:00 - 7:00 pm: README, PROMPTS.md, test report
 - Sun 7:00 - 9:00 pm: fresh-clone check, final git log review, SUBMIT (aim for 9 pm, not midnight)
-- If behind: cut the optional deploy first, then frontend polish. Never cut tests, README or PROMPTS.md.
 
 ## Phase 0 — Setup (30 min)
-- [ ] Create PUBLIC GitHub repo; `git init`; add `.gitignore`, `.env.example`
-- [ ] Add `CLAUDE.md`, `PLAN.md`, empty `README.md` skeleton, `PROMPTS.md` with a header
-- [ ] Scaffold `backend/` (TypeScript, Express, Prisma+SQLite, Jest, Supertest, zod, bcrypt, jsonwebtoken)
-- [ ] First commit; run `git log -1` and confirm the Co-Authored-By trailer is present
-- [ ] Add this planning chat's public share link to `PROMPTS.md`
+- [x] Create PUBLIC GitHub repo; `git init`; add `.gitignore`, `.env.example`
+- [x] Add `CLAUDE.md`, `PLAN.md`, empty `README.md` skeleton, `PROMPTS.md` with a header
+- [x] Scaffold `backend/` (TypeScript, Express, Prisma+SQLite, Jest, Supertest, zod, bcrypt, jsonwebtoken)
+- [x] First commit; run `git log -1` and confirm the Co-Authored-By trailer is present
+- [x] Add this planning chat's public share link to `PROMPTS.md`
 
 ## Phase 1 — Backend (strict TDD)
 - [x] 1. Health check: `GET /health` returns 200; DB connection test
