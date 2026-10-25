@@ -1,5 +1,5 @@
 import { ConflictError, NotFoundError } from '../errors';
-import { NewVehicle, Vehicle, VehicleRepository } from '../repositories/vehicleRepository';
+import { NewVehicle, Vehicle, VehicleFilters, VehicleRepository } from '../repositories/vehicleRepository';
 
 const VEHICLE_NOT_FOUND = 'Vehicle not found';
 
@@ -16,8 +16,9 @@ export class VehicleService {
     return this.vehicles.findAll();
   }
 
-  async search(_filters: object): Promise<Vehicle[]> {
-    throw new Error('Not implemented');
+  /** Returns vehicles matching every given filter, including sold-out ones. */
+  async search(filters: VehicleFilters): Promise<Vehicle[]> {
+    return this.vehicles.search(filters);
   }
 
   /**

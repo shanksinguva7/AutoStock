@@ -21,6 +21,27 @@ const vehicleIdSchema = z.object({
   id: z.coerce.number().int().positive(),
 });
 
+// Blank query values (e.g. "?make=") are treated as not sent, so they never filter
+// on an empty string or coerce to a price of 0.
+const blankToUndefined = (value: unknown) =>
+  typeof value === 'string' && value.trim() === '' ? undefined : value;
+
+const optionalText = z.preprocess(blankToUndefined, z.string().trim().optional());
+const optionalPrice = z.preprocess(blankToUndefined, z.coerce.number().nonnegative().optional());
+
+const searchSchema = z
+  .object({
+    make: optionalText,
+    model: optionalText,
+    category: optionalText,
+    minPrice: optionalPrice,
+    maxPrice: optionalPrice,
+  })
+  .refine(
+    ({ minPrice, maxPrice }) => minPrice === undefined || maxPrice === undefined || minPrice <= maxPrice,
+    { message: 'minPrice must not be greater than maxPrice' },
+  );
+
 const restockSchema = z.object({
   amount: z.number().int().positive(),
 });
@@ -36,6 +57,11 @@ export class VehicleController {
 
   list = async (_req: Request, res: Response): Promise<void> => {
     res.status(HttpStatus.OK).json(await this.vehicleService.list());
+  };
+
+  search = async (req: Request, res: Response): Promise<void> => {
+    const filters = parseOrThrow(searchSchema, req.query);
+    res.status(HttpStatus.OK).json(await this.vehicleService.search(filters));
   };
 
   purchase = async (req: Request, res: Response): Promise<void> => {

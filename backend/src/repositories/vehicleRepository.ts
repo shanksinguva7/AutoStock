@@ -14,10 +14,21 @@ export interface Vehicle {
 
 export type NewVehicle = Omit<Vehicle, 'id'>;
 
+/** Optional search filters; an omitted filter matches every vehicle. */
+export interface VehicleFilters {
+  make?: string;
+  model?: string;
+  category?: string;
+  minPrice?: number;
+  maxPrice?: number;
+}
+
 export interface VehicleRepository {
   create(data: NewVehicle): Promise<Vehicle>;
   findAll(): Promise<Vehicle[]>;
   findById(id: number): Promise<Vehicle | null>;
+  /** Text filters match case-insensitively anywhere in the field; price bounds are inclusive. */
+  search(filters: VehicleFilters): Promise<Vehicle[]>;
   /**
    * Takes one unit off the stock if at least one is left.
    * Returns the updated vehicle, or null when nothing changed (unknown id or out of stock).
@@ -37,6 +48,20 @@ export class PrismaVehicleRepository implements VehicleRepository {
   async findAll(): Promise<Vehicle[]> {
     // Ordered by id so the list is stable and new vehicles appear last.
     const rows = await this.db.vehicle.findMany({ orderBy: { id: 'asc' } });
+    return rows.map(toVehicle);
+  }
+
+  async search({ make, model, category, minPrice, maxPrice }: VehicleFilters): Promise<Vehicle[]> {
+    // Prisma skips any condition whose value is undefined, so omitted filters match everything.
+    const rows = await this.db.vehicle.findMany({
+      where: {
+        make: { contains: make },
+        model: { contains: model },
+        category: { contains: category },
+        price: { gte: minPrice, lte: maxPrice },
+      },
+      orderBy: { id: 'asc' },
+    });
     return rows.map(toVehicle);
   }
 
