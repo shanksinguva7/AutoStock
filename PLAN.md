@@ -37,9 +37,9 @@ Tick a box only when the tests pass and the commits are made. One slice at a tim
 ## Phase 2 — Frontend
 - [x] Scaffold Vite + React + TS + Tailwind + Vitest; API client with token handling
 - [x] Auth context + protected routes; register and login forms (tests for validation and error display)
-- [ ] Vehicle dashboard: cards/table, loading + empty + error states
-- [ ] Search and filter UI (make, model, category, price range) wired to `/api/vehicles/search`
-- [ ] Purchase button: disabled at quantity 0; list refreshes after purchase; success/error toast
+- [x] Vehicle dashboard: cards/table, loading + empty + error states
+- [x] Search and filter UI (make, model, category, price range) wired to `/api/vehicles/search`
+- [x] Purchase button: disabled at quantity 0; list refreshes after purchase; success/error toast
 - [ ] Admin panel: add, edit, delete (with confirm), restock; hidden from non-admins
 - [ ] Responsive check at phone, tablet, desktop widths (use Playwright MCP); fix issues
 - [ ] Component tests: forms, disabled Purchase, admin gate; add frontend job to CI
