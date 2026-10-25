@@ -54,42 +54,68 @@ export function AuthForm({
   }
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-sm flex-col justify-center px-4 py-10">
-      <h1 className="mb-10 text-center text-lg tracking-[0.4em] uppercase">AutoStock</h1>
-      <h2 className="mb-6 text-sm tracking-[0.25em] text-ink-muted uppercase">{title}</h2>
-      <form onSubmit={handleSubmit} noValidate className="space-y-5">
-        {serverError && (
-          <p role="alert" className="border border-error px-3 py-2 text-sm text-error">
-            {serverError}
-          </p>
-        )}
-        <TextField
-          id="email"
-          label="Email"
-          type="email"
-          autoComplete="email"
-          value={email}
-          onChange={setEmail}
-          error={fieldErrors.email}
-        />
-        <TextField
-          id="password"
-          label="Password"
-          type="password"
-          autoComplete={passwordAutoComplete}
-          value={password}
-          onChange={setPassword}
-          error={fieldErrors.password}
-        />
-        <button
-          type="submit"
-          disabled={submitting}
-          className={`w-full py-2.5 ${primaryButton}`}
-        >
-          {submitting ? submittingLabel : submitLabel}
-        </button>
-      </form>
-      <p className="mt-6 text-sm text-ink-muted">{footer}</p>
-    </main>
+    // overflow-hidden keeps the drifting glows from causing horizontal scroll on small screens.
+    <div className="relative isolate min-h-screen overflow-hidden">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute -top-1/4 left-1/2 h-[36rem] w-[36rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgb(255_255_255/0.09),transparent_65%)] blur-3xl motion-safe:animate-drift" />
+        <div className="absolute -bottom-1/3 -left-1/4 h-[30rem] w-[30rem] rounded-full bg-[radial-gradient(circle,rgb(148_163_184/0.08),transparent_65%)] blur-3xl motion-safe:animate-drift-slow" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,var(--color-canvas)_100%)]" />
+      </div>
+
+      <main className="mx-auto flex min-h-screen max-w-sm flex-col justify-center px-4 py-12 motion-safe:animate-fade-rise">
+        <div className="mb-12 text-center">
+          {/* The negative right margin cancels the trailing letter-spacing so the wordmark centres optically. */}
+          <h1 className="mr-[-0.5em] text-2xl font-light tracking-[0.5em] uppercase sm:text-3xl">AutoStock</h1>
+          <div
+            aria-hidden="true"
+            className="mx-auto mt-5 h-px w-24 bg-gradient-to-r from-transparent via-ink-muted to-transparent"
+          />
+        </div>
+
+        <div className="border border-line/80 bg-surface/70 p-6 shadow-[0_24px_80px_-24px_rgb(0_0_0/0.9)] backdrop-blur-sm sm:p-8">
+          <h2 className="mb-6 text-xs tracking-[0.3em] text-ink-muted uppercase">{title}</h2>
+          <form
+            onSubmit={handleSubmit}
+            noValidate
+            className="space-y-5 [&_input]:transition-[border-color,box-shadow] [&_input]:duration-200 [&_input]:motion-reduce:transition-none [&_input:focus]:shadow-[0_0_0_3px_rgb(255_255_255/0.12)] [&_input:hover:not(:focus,[aria-invalid=true])]:border-ink-muted"
+          >
+            {serverError && (
+              <p role="alert" className="border border-error px-3 py-2 text-sm text-error">
+                {serverError}
+              </p>
+            )}
+            <TextField
+              id="email"
+              label="Email"
+              type="email"
+              autoComplete="email"
+              value={email}
+              onChange={setEmail}
+              error={fieldErrors.email}
+            />
+            <TextField
+              id="password"
+              label="Password"
+              type="password"
+              autoComplete={passwordAutoComplete}
+              value={password}
+              onChange={setPassword}
+              error={fieldErrors.password}
+            />
+            <button
+              type="submit"
+              disabled={submitting}
+              className={`mt-2 w-full py-3 tracking-wide transition duration-200 enabled:hover:bg-neutral-200 enabled:active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink motion-reduce:transition-none motion-reduce:active:scale-100 ${primaryButton}`}
+            >
+              {submitting ? submittingLabel : submitLabel}
+            </button>
+          </form>
+        </div>
+
+        <p className="mt-8 text-center text-sm text-ink-muted [&_a]:transition-all [&_a]:duration-200 [&_a:hover]:underline-offset-8 [&_a]:motion-reduce:transition-none [&_a:focus-visible]:outline-2 [&_a:focus-visible]:outline-offset-4 [&_a:focus-visible]:outline-ink">
+          {footer}
+        </p>
+      </main>
+    </div>
   );
 }
