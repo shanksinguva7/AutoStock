@@ -30,4 +30,8 @@ export class VehicleService {
     }
     throw new ConflictError('Vehicle is out of stock');
   }
+
+  async restock(_id: number, _amount: number): Promise<Vehicle> {
+    throw new Error('Not implemented');
+  }
 }

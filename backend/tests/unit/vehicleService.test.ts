@@ -28,6 +28,15 @@ class FakeVehicleRepository implements VehicleRepository {
     vehicle.quantity -= 1;
     return { ...vehicle };
   }
+
+  async incrementQuantity(id: number, amount: number): Promise<Vehicle | null> {
+    const vehicle = await this.findById(id);
+    if (!vehicle) {
+      return null;
+    }
+    vehicle.quantity += amount;
+    return { ...vehicle };
+  }
 }
 
 const corolla: NewVehicle = { make: 'Toyota', model: 'Corolla', category: 'Sedan', price: 20000, quantity: 5 };
@@ -114,5 +123,34 @@ describe('VehicleService.purchase', () => {
     const UNKNOWN_ID = 42;
 
     await expect(service.purchase(UNKNOWN_ID)).rejects.toMatchObject({ status: 404 });
+  });
+});
+
+describe('VehicleService.restock', () => {
+  let repository: FakeVehicleRepository;
+  let service: VehicleService;
+
+  beforeEach(() => {
+    repository = new FakeVehicleRepository();
+    service = new VehicleService(repository);
+  });
+
+  it('returns the vehicle with its quantity increased by the amount', async () => {
+    const { id } = await repository.create(corolla);
+
+    await expect(service.restock(id, 3)).resolves.toEqual({ id, ...corolla, quantity: 8 });
+    expect(repository.vehicles[0].quantity).toBe(8);
+  });
+
+  it('restocks a vehicle that is sold out', async () => {
+    const { id } = await repository.create({ ...corolla, quantity: 0 });
+
+    await expect(service.restock(id, 2)).resolves.toMatchObject({ quantity: 2 });
+  });
+
+  it('rejects with a 404 not found when the vehicle does not exist', async () => {
+    const UNKNOWN_ID = 42;
+
+    await expect(service.restock(UNKNOWN_ID, 1)).rejects.toMatchObject({ status: 404 });
   });
 });
