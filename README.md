@@ -57,6 +57,8 @@ Check it is up: `GET http://localhost:4000/health` returns `{"status":"ok","data
 
 Tests: `npm test` runs the Jest suite (it builds its own `prisma/test.db` and sets its own env, so it never touches `dev.db`), and `npm test -- --coverage` adds the coverage table.
 
+Production-style run: `npm run build` compiles `src/` to `dist/`, then `npm start` runs `dist/server.js` (it reads the same `.env`).
+
 ### Frontend
 
 ```bash
@@ -65,7 +67,7 @@ npm install
 npm run dev               # Vite on http://localhost:5173 (or the next free port)
 ```
 
-Open the URL Vite prints and log in. The Vite dev server proxies every `/api` request to the backend at `http://localhost:4000`, so the browser only talks to one origin and the backend needs no CORS setup. If your backend runs elsewhere, set `VITE_API_PROXY_TARGET` in the shell before `npm run dev` (for example `VITE_API_PROXY_TARGET=http://localhost:4001 npm run dev`); the frontend needs no `.env` file.
+Open the URL Vite prints and log in. The Vite dev server proxies every `/api` request to the backend at `http://localhost:4000`, so the browser only talks to one origin and the backend needs no CORS setup. The frontend needs no `.env` file for this default. If your backend runs elsewhere, copy `frontend/.env.example` to `frontend/.env` and change `VITE_API_PROXY_TARGET`, or set it in the shell for one run (a shell value wins over the file).
 
 Other scripts: `npm test` runs Vitest once, `npm run test:watch` keeps it running, and `npm run build` type-checks and builds to `dist/`.
 
@@ -82,11 +84,11 @@ Backend (`backend/.env`, copied from `backend/.env.example`; `.env` is git-ignor
 | `ADMIN_EMAIL` | Email of the demo admin that `npm run db:seed` creates. Needed by the seed script only. |
 | `ADMIN_PASSWORD` | Password for that admin. Needed by the seed script only. |
 
-Frontend (dev server only):
+Frontend (`frontend/.env`, optional, copied from `frontend/.env.example`; dev server only):
 
 | Name | Purpose |
 | --- | --- |
-| `VITE_API_PROXY_TARGET` | Where the Vite dev server forwards `/api` requests. Optional, defaults to `http://localhost:4000`. Read from the shell environment, not from a `.env` file. |
+| `VITE_API_PROXY_TARGET` | Where the Vite dev server forwards `/api` requests. Optional, defaults to `http://localhost:4000`. A value set in the shell overrides the `.env` file. |
 
 ## Seeded Admin Login
 
