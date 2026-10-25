@@ -7,8 +7,9 @@ import { parseOrThrow } from '../validation';
 // Trim first so a whitespace-only name counts as missing.
 const requiredText = z.string().trim().min(1);
 
-// z.number() rejects numeric strings, so clients must send real JSON numbers.
-const createVehicleSchema = z.object({
+// Full vehicle body for create and PUT. z.number() rejects numeric strings, so clients
+// must send real JSON numbers; unknown keys such as id or createdAt are dropped.
+const vehicleSchema = z.object({
   make: requiredText,
   model: requiredText,
   category: requiredText,
@@ -50,7 +51,7 @@ export class VehicleController {
   constructor(private readonly vehicleService: VehicleService) {}
 
   create = async (req: Request, res: Response): Promise<void> => {
-    const data = parseOrThrow(createVehicleSchema, req.body);
+    const data = parseOrThrow(vehicleSchema, req.body);
     const vehicle = await this.vehicleService.create(data);
     res.status(HttpStatus.CREATED).json(vehicle);
   };
@@ -64,10 +65,10 @@ export class VehicleController {
     res.status(HttpStatus.OK).json(await this.vehicleService.search(filters));
   };
 
-  // PUT replaces the whole vehicle, so it uses the create rules; unknown keys such as id are dropped.
+  // PUT replaces the whole vehicle, so it needs every field, just like create.
   update = async (req: Request, res: Response): Promise<void> => {
     const id = parseVehicleId(req);
-    const data = parseOrThrow(createVehicleSchema, req.body);
+    const data = parseOrThrow(vehicleSchema, req.body);
     res.status(HttpStatus.OK).json(await this.vehicleService.update(id, data));
   };
 

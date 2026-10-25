@@ -83,31 +83,27 @@ export class PrismaVehicleRepository implements VehicleRepository {
   }
 
   async incrementQuantity(id: number, amount: number): Promise<Vehicle | null> {
-    try {
-      // The database adds to its current value, so concurrent restocks and purchases
-      // never overwrite each other, and the returned row is the one this update wrote.
-      const row = await this.db.vehicle.update({
-        where: { id },
-        data: { quantity: { increment: amount } },
-      });
-      return toVehicle(row);
-    } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === RECORD_NOT_FOUND) {
-        return null;
-      }
-      throw error;
-    }
+    // The database adds to its current value, so concurrent restocks and purchases
+    // never overwrite each other, and the returned row is the one this update wrote.
+    return nullIfNotFound(
+      this.db.vehicle.update({ where: { id }, data: { quantity: { increment: amount } } }),
+    );
   }
 
   async update(id: number, data: NewVehicle): Promise<Vehicle | null> {
-    try {
-      return toVehicle(await this.db.vehicle.update({ where: { id }, data }));
-    } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === RECORD_NOT_FOUND) {
-        return null;
-      }
-      throw error;
+    return nullIfNotFound(this.db.vehicle.update({ where: { id }, data }));
+  }
+}
+
+/** Runs a Prisma update or delete by id, turning "record not found" into null. */
+async function nullIfNotFound(query: Promise<Vehicle>): Promise<Vehicle | null> {
+  try {
+    return toVehicle(await query);
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === RECORD_NOT_FOUND) {
+      return null;
     }
+    throw error;
   }
 }
 
