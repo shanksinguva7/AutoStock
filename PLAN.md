@@ -30,8 +30,8 @@ Tick a box only when the tests pass and the commits are made. One slice at a tim
 - [x] 9. Delete vehicle (admin): 204; 404 unknown id; 403 non-admin
 - [x] 10. Purchase: decrements by one; 409 at quantity 0; 404 unknown id; 401 without token; two concurrent purchases of the last unit never go below 0
 - [x] 11. Restock (admin): increases quantity; 400 for zero, negative or non-integer; 404; 403 non-admin
-- [ ] Coverage report >= 90% on services; save output for the README test report
-- [ ] CI: `.github/workflows/ci.yml` runs backend tests (add frontend job later)
+- [x] Coverage report >= 90% on services; save output for the README test report
+- [x] CI: `.github/workflows/ci.yml` runs backend tests (add frontend job later)
 - [ ] Final refactor pass: duplicated code, naming, error handling, JSDoc on services
 
 ## Phase 2 — Frontend
