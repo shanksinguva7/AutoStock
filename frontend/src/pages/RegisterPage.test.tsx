@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import { renderApp } from '../test/renderApp';
 import { mockFetch, mockPendingFetch } from '../test/mockFetch';
-import { regularUser } from '../test/fixtures';
+import { emptyInventory, regularUser } from '../test/fixtures';
 import { loadSession } from '../auth/session';
 
 async function submitRegister(email: string, password: string) {
@@ -57,13 +57,15 @@ describe('Register page', () => {
     const fetchMock = mockFetch(
       { status: 201, body: regularUser },
       { status: 200, body: { token: 'jwt-new', user: regularUser } },
+      emptyInventory,
     );
     renderApp('/register');
 
     await submitRegister('driver@example.com', 'long-enough-password');
 
     expect(await screen.findByRole('heading', { name: /dashboard/i })).toBeInTheDocument();
-    expect(fetchMock.mock.calls.map(([url]) => url)).toEqual(['/api/auth/register', '/api/auth/login']);
+    const authCalls = fetchMock.mock.calls.map(([url]) => url).slice(0, 2);
+    expect(authCalls).toEqual(['/api/auth/register', '/api/auth/login']);
     expect(loadSession()?.token).toBe('jwt-new');
   });
 

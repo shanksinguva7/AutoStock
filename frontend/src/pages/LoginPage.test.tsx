@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import { renderApp } from '../test/renderApp';
 import { mockFetch, mockPendingFetch } from '../test/mockFetch';
-import { regularUser } from '../test/fixtures';
+import { emptyInventory, regularUser } from '../test/fixtures';
 import { loadSession } from '../auth/session';
 
 async function submitLogin(email: string, password: string) {
@@ -25,7 +25,7 @@ describe('Login page', () => {
   });
 
   it('successful login stores the session and navigates to the dashboard', async () => {
-    const fetchMock = mockFetch({ status: 200, body: { token: 'jwt-123', user: regularUser } });
+    const fetchMock = mockFetch({ status: 200, body: { token: 'jwt-123', user: regularUser } }, emptyInventory);
     renderApp('/login');
 
     await submitLogin('driver@example.com', 'correct-password');
