@@ -8,7 +8,12 @@ import { PrismaUserRepository } from './repositories/userRepository';
 import { AuthService } from './services/authService';
 import { AuthController } from './controllers/authController';
 import { authRoutes } from './routes/authRoutes';
+import { PrismaVehicleRepository } from './repositories/vehicleRepository';
+import { VehicleService } from './services/vehicleService';
+import { VehicleController } from './controllers/vehicleController';
+import { vehicleRoutes } from './routes/vehicleRoutes';
 import { errorHandler } from './middleware/errorHandler';
+import { createRequireAuth } from './middleware/auth';
 import { loadAuthConfig } from './config';
 
 /** Builds the Express app. The DB client is injected so tests can pass their own. */
@@ -21,6 +26,9 @@ export function createApp(db: PrismaClient): Express {
 
   const authService = new AuthService(new PrismaUserRepository(db), loadAuthConfig());
   app.use('/api/auth', authRoutes(new AuthController(authService)));
+
+  const vehicleController = new VehicleController(new VehicleService(new PrismaVehicleRepository(db)));
+  app.use('/api/vehicles', vehicleRoutes(vehicleController, createRequireAuth(loadAuthConfig())));
 
   // Must be registered last so it catches errors from every route above.
   app.use(errorHandler);

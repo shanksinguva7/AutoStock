@@ -14,3 +14,13 @@ model User {
   role         String   @default("user")
   createdAt    DateTime @default(now())
 }
+
+model Vehicle {
+  id        Int      @id @default(autoincrement())
+  make      String
+  model     String
+  category  String
+  price     Float
+  quantity  Int
+  createdAt DateTime @default(now())
+}
