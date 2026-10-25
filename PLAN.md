@@ -27,7 +27,7 @@ Tick a box only when the tests pass and the commits are made. One slice at a tim
 - [x] 6. List vehicles: 200 returns all including quantity 0; 401 without token
 - [x] 7. Search: each filter alone (make, model, category, price range); combined filters; case-insensitive; empty result is `[]`; invalid price is 400; route not shadowed by `/:id`
 - [x] 8. Update vehicle (admin): 200 with changes; 400 invalid; 404 unknown id; 403 non-admin
-- [ ] 9. Delete vehicle (admin): 204; 404 unknown id; 403 non-admin
+- [x] 9. Delete vehicle (admin): 204; 404 unknown id; 403 non-admin
 - [x] 10. Purchase: decrements by one; 409 at quantity 0; 404 unknown id; 401 without token; two concurrent purchases of the last unit never go below 0
 - [x] 11. Restock (admin): increases quantity; 400 for zero, negative or non-integer; 404; 403 non-admin
 - [ ] Coverage report >= 90% on services; save output for the README test report
