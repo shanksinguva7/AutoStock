@@ -1,0 +1,79 @@
+
+> autostock-backend@1.0.0 test
+> jest --runInBand --coverage
+
+PASS tests/vehicles.delete.test.ts
+PASS tests/auth.login.test.ts
+PASS tests/vehicles.update.test.ts
+PASS tests/auth.register.test.ts
+PASS tests/unit/authService.test.ts
+PASS tests/vehicles.restock.test.ts
+PASS tests/seed.test.ts
+  ● Console
+
+    console.log
+      Created admin admin@autostock.test
+
+      at log (src/scripts/seed.ts:12:11)
+
+    console.log
+      Created admin admin@autostock.test
+
+      at log (src/scripts/seed.ts:12:11)
+
+    console.log
+      Admin admin@autostock.test already exists, nothing to do
+
+      at log (src/scripts/seed.ts:12:11)
+
+    console.log
+      Created admin admin@autostock.test
+
+      at log (src/scripts/seed.ts:12:11)
+
+PASS tests/vehicles.create.test.ts
+PASS tests/vehicles.purchase.test.ts
+PASS tests/vehicles.search.test.ts
+PASS tests/vehicles.list.test.ts
+PASS tests/health.test.ts
+PASS tests/authMiddleware.test.ts
+PASS tests/unit/vehicleService.test.ts
+PASS tests/unit/config.test.ts
+-----------------------|---------|----------|---------|---------|-------------------
+File                   | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-----------------------|---------|----------|---------|---------|-------------------
+All files              |   96.83 |     91.3 |   97.36 |    96.8 |                   
+ src                   |     100 |       75 |     100 |     100 |                   
+  app.ts               |     100 |      100 |     100 |     100 |                   
+  config.ts            |     100 |    66.66 |     100 |     100 | 24                
+  errors.ts            |     100 |      100 |     100 |     100 |                   
+  httpStatus.ts        |     100 |      100 |     100 |     100 |                   
+  validation.ts        |     100 |      100 |     100 |     100 |                   
+ src/controllers       |     100 |      100 |     100 |     100 |                   
+  authController.ts    |     100 |      100 |     100 |     100 |                   
+  healthController.ts  |     100 |      100 |     100 |     100 |                   
+  vehicleController.ts |     100 |      100 |     100 |     100 |                   
+ src/middleware        |   92.68 |     87.5 |     100 |    92.5 |                   
+  auth.ts              |   96.96 |    85.71 |     100 |   96.87 | 42                
+  errorHandler.ts      |      75 |      100 |     100 |      75 | 11-12             
+ src/repositories      |   96.66 |      100 |     100 |   96.66 |                   
+  healthRepository.ts  |     100 |      100 |     100 |     100 |                   
+  userRepository.ts    |     100 |      100 |     100 |     100 |                   
+  vehicleRepository.ts |   95.23 |      100 |     100 |   95.23 | 112               
+ src/routes            |     100 |      100 |     100 |     100 |                   
+  authRoutes.ts        |     100 |      100 |     100 |     100 |                   
+  healthRoutes.ts      |     100 |      100 |     100 |     100 |                   
+  vehicleRoutes.ts     |     100 |      100 |     100 |     100 |                   
+ src/scripts           |   68.75 |       50 |   33.33 |   68.75 |                   
+  seed.ts              |   68.75 |       50 |   33.33 |   68.75 | 16-22             
+ src/services          |     100 |      100 |     100 |     100 |                   
+  authService.ts       |     100 |      100 |     100 |     100 |                   
+  healthService.ts     |     100 |      100 |     100 |     100 |                   
+  vehicleService.ts    |     100 |      100 |     100 |     100 |                   
+-----------------------|---------|----------|---------|---------|-------------------
+
+Test Suites: 15 passed, 15 total
+Tests:       175 passed, 175 total
+Snapshots:   0 total
+Time:        10.253 s
+Ran all test suites.
