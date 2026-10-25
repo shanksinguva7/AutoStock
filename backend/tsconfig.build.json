@@ -1,0 +1,11 @@
+{
+  // Production build only: compile src/ so dist/ mirrors it (dist/server.js) and tests stay out.
+  // tsconfig.json still covers src/ and tests/ for ts-jest and the editor.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "types": ["node"]
+  },
+  "include": ["src"]
+}
