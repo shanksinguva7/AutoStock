@@ -25,11 +25,19 @@ export function SearchForm({ filters, searching, onChange, onSearch, onClear }: 
     <form
       role="search"
       onSubmit={handleSubmit}
-      className="grid grid-cols-1 gap-4 border border-line p-4 sm:grid-cols-2 lg:grid-cols-6 lg:items-end"
+      // Phone: text filters full width, the two prices share a row. Tablet: three per row, so the
+      // price range sits together with the buttons. Desktop: everything on one row.
+      className="grid grid-cols-2 gap-4 border border-line p-4 sm:grid-cols-3 sm:items-end lg:grid-cols-6"
     >
-      <TextField id="filter-make" label="Make" value={filters.make} onChange={update('make')} />
-      <TextField id="filter-model" label="Model" value={filters.model} onChange={update('model')} />
-      <TextField id="filter-category" label="Category" value={filters.category} onChange={update('category')} />
+      <div className="col-span-2 sm:col-span-1">
+        <TextField id="filter-make" label="Make" value={filters.make} onChange={update('make')} />
+      </div>
+      <div className="col-span-2 sm:col-span-1">
+        <TextField id="filter-model" label="Model" value={filters.model} onChange={update('model')} />
+      </div>
+      <div className="col-span-2 sm:col-span-1">
+        <TextField id="filter-category" label="Category" value={filters.category} onChange={update('category')} />
+      </div>
       <TextField
         id="filter-min-price"
         label="Min price"
@@ -48,7 +56,7 @@ export function SearchForm({ filters, searching, onChange, onSearch, onClear }: 
         value={filters.maxPrice}
         onChange={update('maxPrice')}
       />
-      <div className="flex gap-2 sm:col-span-2 lg:col-span-1">
+      <div className="col-span-2 flex gap-2 sm:col-span-1">
         <button
           type="submit"
           disabled={searching}
