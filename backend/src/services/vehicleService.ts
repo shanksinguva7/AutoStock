@@ -26,11 +26,7 @@ export class VehicleService {
    * @throws NotFoundError when no vehicle has this id.
    */
   async update(id: number, data: NewVehicle): Promise<Vehicle> {
-    const updated = await this.vehicles.update(id, data);
-    if (!updated) {
-      throw new NotFoundError(VEHICLE_NOT_FOUND);
-    }
-    return updated;
+    return foundOrThrow(await this.vehicles.update(id, data));
   }
 
   /**
@@ -38,10 +34,7 @@ export class VehicleService {
    * @throws NotFoundError when no vehicle has this id, including one already deleted.
    */
   async delete(id: number): Promise<void> {
-    const deleted = await this.vehicles.delete(id);
-    if (!deleted) {
-      throw new NotFoundError(VEHICLE_NOT_FOUND);
-    }
+    foundOrThrow(await this.vehicles.delete(id));
   }
 
   /**
@@ -66,10 +59,14 @@ export class VehicleService {
    * @throws NotFoundError when no vehicle has this id.
    */
   async restock(id: number, amount: number): Promise<Vehicle> {
-    const updated = await this.vehicles.incrementQuantity(id, amount);
-    if (!updated) {
-      throw new NotFoundError(VEHICLE_NOT_FOUND);
-    }
-    return updated;
+    return foundOrThrow(await this.vehicles.incrementQuantity(id, amount));
   }
+}
+
+/** Repository writes return null for an unknown id; this turns that into a 404. */
+function foundOrThrow(vehicle: Vehicle | null): Vehicle {
+  if (!vehicle) {
+    throw new NotFoundError(VEHICLE_NOT_FOUND);
+  }
+  return vehicle;
 }
