@@ -21,6 +21,10 @@ export class VehicleService {
     return this.vehicles.search(filters);
   }
 
+  async update(_id: number, _data: NewVehicle): Promise<Vehicle> {
+    throw new Error('Not implemented');
+  }
+
   /**
    * Sells one unit of a vehicle.
    * @throws NotFoundError when no vehicle has this id.

@@ -39,6 +39,15 @@ class FakeVehicleRepository implements VehicleRepository {
   }
 
   // Simplified in-memory version of the real filter semantics.
+  async update(id: number, data: NewVehicle): Promise<Vehicle | null> {
+    const vehicle = await this.findById(id);
+    if (!vehicle) {
+      return null;
+    }
+    Object.assign(vehicle, data);
+    return { ...vehicle };
+  }
+
   async search(filters: VehicleFilters): Promise<Vehicle[]> {
     return this.vehicles.filter(
       (vehicle) =>
@@ -191,5 +200,29 @@ describe('VehicleService.search', () => {
 
   it('returns an empty list when nothing matches', async () => {
     await expect(service.search({ make: 'Ford' })).resolves.toEqual([]);
+  });
+});
+
+describe('VehicleService.update', () => {
+  const civic: NewVehicle = { make: 'Honda', model: 'Civic', category: 'Hatchback', price: 25000, quantity: 1 };
+  let repository: FakeVehicleRepository;
+  let service: VehicleService;
+
+  beforeEach(() => {
+    repository = new FakeVehicleRepository();
+    service = new VehicleService(repository);
+  });
+
+  it('replaces every field and returns the updated vehicle with the same id', async () => {
+    const { id } = await repository.create(corolla);
+
+    await expect(service.update(id, civic)).resolves.toEqual({ id, ...civic });
+    expect(repository.vehicles).toEqual([{ id, ...civic }]);
+  });
+
+  it('rejects with a 404 not found when the vehicle does not exist', async () => {
+    const UNKNOWN_ID = 42;
+
+    await expect(service.update(UNKNOWN_ID, civic)).rejects.toMatchObject({ status: 404 });
   });
 });
