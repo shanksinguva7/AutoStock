@@ -147,4 +147,74 @@ All request and response bodies are JSON. Errors always look like `{ "error": "m
 
 ## Test Report
 
+Numbers from running both suites locally on 25 Oct 2026.
+
+### Backend: 15 suites, 175 tests, all passing
+
+`cd backend && npm test -- --coverage` (Jest + Supertest against a fresh `prisma/test.db`). The full output is saved in [docs/test-report/backend-coverage.txt](docs/test-report/backend-coverage.txt).
+
+```
+-----------------------|---------|----------|---------|---------|-------------------
+File                   | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
+-----------------------|---------|----------|---------|---------|-------------------
+All files              |   96.83 |     91.3 |   97.36 |    96.8 |
+ src                   |     100 |       75 |     100 |     100 |
+  app.ts               |     100 |      100 |     100 |     100 |
+  config.ts            |     100 |    66.66 |     100 |     100 | 24
+  errors.ts            |     100 |      100 |     100 |     100 |
+  httpStatus.ts        |     100 |      100 |     100 |     100 |
+  validation.ts        |     100 |      100 |     100 |     100 |
+ src/controllers       |     100 |      100 |     100 |     100 |
+  authController.ts    |     100 |      100 |     100 |     100 |
+  healthController.ts  |     100 |      100 |     100 |     100 |
+  vehicleController.ts |     100 |      100 |     100 |     100 |
+ src/middleware        |   92.68 |     87.5 |     100 |    92.5 |
+  auth.ts              |   96.96 |    85.71 |     100 |   96.87 | 42
+  errorHandler.ts      |      75 |      100 |     100 |      75 | 11-12
+ src/repositories      |   96.66 |      100 |     100 |   96.66 |
+  healthRepository.ts  |     100 |      100 |     100 |     100 |
+  userRepository.ts    |     100 |      100 |     100 |     100 |
+  vehicleRepository.ts |   95.23 |      100 |     100 |   95.23 | 112
+ src/routes            |     100 |      100 |     100 |     100 |
+  authRoutes.ts        |     100 |      100 |     100 |     100 |
+  healthRoutes.ts      |     100 |      100 |     100 |     100 |
+  vehicleRoutes.ts     |     100 |      100 |     100 |     100 |
+ src/scripts           |   68.75 |       50 |   33.33 |   68.75 |
+  seed.ts              |   68.75 |       50 |   33.33 |   68.75 | 16-22
+ src/services          |     100 |      100 |     100 |     100 |
+  authService.ts       |     100 |      100 |     100 |     100 |
+  healthService.ts     |     100 |      100 |     100 |     100 |
+  vehicleService.ts    |     100 |      100 |     100 |     100 |
+-----------------------|---------|----------|---------|---------|-------------------
+```
+
+Services, the layer holding the business rules, are at 100% on every metric (target was 90%+). The lowest file is `seed.ts`: its tests call `seed()` directly, so the command-line entry block (lines 16-22) is not run under Jest.
+
+### Frontend: 7 files, 45 tests, all passing
+
+`cd frontend && npm test` (Vitest + React Testing Library on jsdom, with `fetch` mocked).
+
+| Test file | Tests | What it covers |
+| --- | --- | --- |
+| `src/api/client.test.ts` | 5 | JSON body, bearer token attached or omitted, `ApiError` from `{ error }`, 204 |
+| `src/pages/LoginPage.test.tsx` | 7 | 401 message, successful login stores the session, field validation, loading state |
+| `src/pages/RegisterPage.test.tsx` | 6 | 409 and 400 messages, field validation, register then sign-in, loading state |
+| `src/auth/ProtectedRoute.test.tsx` | 3 | redirect when logged out, dashboard when logged in, logout |
+| `src/pages/DashboardPage.test.tsx` | 10 | loading/empty/error states, retry, disabled Purchase at quantity 0, purchase and 409 toasts, search filters, clear |
+| `src/pages/AdminPage.test.tsx` | 13 | admin gate, add/edit with validation, delete confirmation, restock validation |
+| `src/App.test.tsx` | 1 | app renders |
+
+Frontend coverage is not measured (no coverage provider is installed for Vitest).
+
+## Continuous Integration
+
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on every push and pull request, with two jobs on `ubuntu-latest` and the current Node LTS:
+
+- **Backend tests:** `npm ci`, `npx prisma generate`, `npx prisma db push --skip-generate` to create the test database, then `npm test`. It uses fake, test-only env values set in the workflow; no real secrets are involved.
+- **Frontend tests:** `npm ci`, then `npm test`. No env is needed because the tests mock `fetch`.
+
+The first CI run failed before any test ran: `ts-jest` could not find `jest-util`, which the lockfile only had as an optional peer entry that `npm ci` on npm 11 leaves out. Commit `54a742a` fixed it by adding `jest-util` as a real dev dependency. The frontend job was added later, in commit `878fc83`.
+
 ## My AI Usage
+
+To be written by the author.
