@@ -1,4 +1,4 @@
-import { loadAdminCredentials, loadAuthConfig } from '../../src/config';
+import { loadAdminCredentials, loadAuthConfig, loadCorsOrigins } from '../../src/config';
 
 describe('loadAuthConfig', () => {
   it('reads the JWT secret and expiry from the environment', () => {
@@ -26,5 +26,17 @@ describe('loadAdminCredentials', () => {
   it('throws when ADMIN_EMAIL or ADMIN_PASSWORD is missing', () => {
     expect(() => loadAdminCredentials({ ADMIN_EMAIL: 'a@b.test' })).toThrow(/ADMIN_PASSWORD/);
     expect(() => loadAdminCredentials({ ADMIN_PASSWORD: 'pw-123456' })).toThrow(/ADMIN_EMAIL/);
+  });
+});
+
+describe('loadCorsOrigins', () => {
+  it('reads a comma-separated list of origins and trims spaces', () => {
+    const origins = loadCorsOrigins({ CORS_ORIGIN: 'https://a.test, https://b.test ,' });
+
+    expect(origins).toEqual(['https://a.test', 'https://b.test']);
+  });
+
+  it('returns no origins when CORS_ORIGIN is not set, so cross-origin calls stay blocked', () => {
+    expect(loadCorsOrigins({})).toEqual([]);
   });
 });
