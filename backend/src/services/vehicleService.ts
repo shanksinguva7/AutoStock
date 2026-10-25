@@ -12,4 +12,8 @@ export class VehicleService {
   async list(): Promise<Vehicle[]> {
     return this.vehicles.findAll();
   }
+
+  async purchase(_id: number): Promise<Vehicle> {
+    throw new Error('Not implemented');
+  }
 }
