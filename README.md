@@ -81,6 +81,7 @@ Backend (`backend/.env`, copied from `backend/.env.example`; `.env` is git-ignor
 | `JWT_SECRET` | Secret used to sign and verify JWTs. Required: the server refuses to start without it. Use a long random string. |
 | `JWT_EXPIRES_IN` | Token lifetime in any format `jsonwebtoken` accepts, e.g. `1h`. Required. |
 | `PORT` | Port the API listens on. Optional, defaults to `4000`. |
+| `CORS_ORIGIN` | Browser origins allowed to call the API, comma-separated (e.g. `https://autostock.vercel.app`). Optional: unset allows none, which is fine locally because the Vite proxy keeps everything on one origin. Set it when the frontend is hosted on another domain. |
 | `ADMIN_EMAIL` | Email of the demo admin that `npm run db:seed` creates. Needed by the seed script only. |
 | `ADMIN_PASSWORD` | Password for that admin. Needed by the seed script only. |
 
