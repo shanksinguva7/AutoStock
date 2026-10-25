@@ -1,4 +1,4 @@
-import { NotFoundError, ConflictError } from '../errors';
+import { ConflictError, NotFoundError } from '../errors';
 import { NewVehicle, Vehicle, VehicleRepository } from '../repositories/vehicleRepository';
 
 export class VehicleService {

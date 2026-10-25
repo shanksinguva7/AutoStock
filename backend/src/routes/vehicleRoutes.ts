@@ -2,7 +2,7 @@ import { RequestHandler, Router } from 'express';
 import { VehicleController } from '../controllers/vehicleController';
 import { requireAdmin } from '../middleware/auth';
 
-/** Every vehicle route needs a valid JWT; writes additionally need an admin. */
+/** Every vehicle route needs a valid JWT; inventory changes also need an admin, purchases do not. */
 export function vehicleRoutes(controller: VehicleController, requireAuth: RequestHandler): Router {
   const router = Router();
   router.use(requireAuth);

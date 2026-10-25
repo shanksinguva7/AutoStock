@@ -21,8 +21,8 @@ class FakeVehicleRepository implements VehicleRepository {
 
   // Mirrors the real repository's contract: only changes stock when a unit is left.
   async decrementIfInStock(id: number): Promise<Vehicle | null> {
-    const vehicle = this.vehicles.find((candidate) => candidate.id === id && candidate.quantity > 0);
-    if (!vehicle) {
+    const vehicle = await this.findById(id);
+    if (!vehicle || vehicle.quantity === 0) {
       return null;
     }
     vehicle.quantity -= 1;
