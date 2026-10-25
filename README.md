@@ -37,12 +37,66 @@ It was built as a TDD kata: every behavior went in as a failing test, then the c
 | CI | GitHub Actions |
 
 ## Local Setup
+
+Prerequisites: Node.js 22.12 or newer (Vitest 5 needs it; developed on 22.16, CI uses the current LTS) and npm. No database server is needed: SQLite is a file inside `backend/prisma/`.
+
+Run the backend and the frontend in two terminals.
+
 ### Backend
+
+```bash
+cd backend
+cp .env.example .env      # Windows cmd: copy .env.example .env
+npm install
+npm run db:push           # prisma db push: creates prisma/dev.db from the schema and generates the client
+npm run db:seed           # creates the demo admin; safe to run again ("already exists, nothing to do")
+npm run dev               # tsx watch, API on http://localhost:4000
+```
+
+Check it is up: `GET http://localhost:4000/health` returns `{"status":"ok","database":"up"}`.
+
+Tests: `npm test` runs the Jest suite (it builds its own `prisma/test.db` and sets its own env, so it never touches `dev.db`), and `npm test -- --coverage` adds the coverage table.
+
 ### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev               # Vite on http://localhost:5173 (or the next free port)
+```
+
+Open the URL Vite prints and log in. The Vite dev server proxies every `/api` request to the backend at `http://localhost:4000`, so the browser only talks to one origin and the backend needs no CORS setup. If your backend runs elsewhere, set `VITE_API_PROXY_TARGET` in the shell before `npm run dev` (for example `VITE_API_PROXY_TARGET=http://localhost:4001 npm run dev`); the frontend needs no `.env` file.
+
+Other scripts: `npm test` runs Vitest once, `npm run test:watch` keeps it running, and `npm run build` type-checks and builds to `dist/`.
 
 ## Environment Variables
 
+Backend (`backend/.env`, copied from `backend/.env.example`; `.env` is git-ignored):
+
+| Name | Purpose |
+| --- | --- |
+| `DATABASE_URL` | SQLite file for the running app, relative to `prisma/schema.prisma` (`file:./dev.db`). Tests override it with `file:./test.db`. |
+| `JWT_SECRET` | Secret used to sign and verify JWTs. Required: the server refuses to start without it. Use a long random string. |
+| `JWT_EXPIRES_IN` | Token lifetime in any format `jsonwebtoken` accepts, e.g. `1h`. Required. |
+| `PORT` | Port the API listens on. Optional, defaults to `4000`. |
+| `ADMIN_EMAIL` | Email of the demo admin that `npm run db:seed` creates. Needed by the seed script only. |
+| `ADMIN_PASSWORD` | Password for that admin. Needed by the seed script only. |
+
+Frontend (dev server only):
+
+| Name | Purpose |
+| --- | --- |
+| `VITE_API_PROXY_TARGET` | Where the Vite dev server forwards `/api` requests. Optional, defaults to `http://localhost:4000`. Read from the shell environment, not from a `.env` file. |
+
 ## Seeded Admin Login
+
+`npm run db:seed` creates one admin from `ADMIN_EMAIL` and `ADMIN_PASSWORD`. With the values from `backend/.env.example`:
+
+| Email | Password | Role |
+| --- | --- | --- |
+| `admin@autostock.local` | `Admin@12345` | `admin` |
+
+These are demo credentials for local use; change them for any real deployment. To try the regular-user view, create an account on the Register page: every new account gets the `user` role.
 
 ## API Summary
 
