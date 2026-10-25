@@ -7,4 +7,8 @@ export class VehicleService {
   async create(data: NewVehicle): Promise<Vehicle> {
     return this.vehicles.create(data);
   }
+
+  async list(): Promise<Vehicle[]> {
+    return [];
+  }
 }

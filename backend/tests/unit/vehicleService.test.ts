@@ -10,6 +10,10 @@ class FakeVehicleRepository implements VehicleRepository {
     this.vehicles.push(vehicle);
     return vehicle;
   }
+
+  async findAll(): Promise<Vehicle[]> {
+    return [...this.vehicles];
+  }
 }
 
 const corolla: NewVehicle = { make: 'Toyota', model: 'Corolla', category: 'Sedan', price: 20000, quantity: 5 };
@@ -40,5 +44,31 @@ describe('VehicleService.create', () => {
     const second = await service.create({ ...corolla, model: 'Camry' });
 
     expect(second.id).not.toBe(first.id);
+  });
+});
+
+describe('VehicleService.list', () => {
+  let repository: FakeVehicleRepository;
+  let service: VehicleService;
+
+  beforeEach(() => {
+    repository = new FakeVehicleRepository();
+    service = new VehicleService(repository);
+  });
+
+  it('returns every vehicle, including ones with quantity 0', async () => {
+    await repository.create(corolla);
+    await repository.create({ ...corolla, model: 'Camry', quantity: 0 });
+
+    const vehicles = await service.list();
+
+    expect(vehicles).toEqual([
+      { id: 1, ...corolla },
+      { id: 2, ...corolla, model: 'Camry', quantity: 0 },
+    ]);
+  });
+
+  it('returns an empty list when there are no vehicles', async () => {
+    await expect(service.list()).resolves.toEqual([]);
   });
 });
