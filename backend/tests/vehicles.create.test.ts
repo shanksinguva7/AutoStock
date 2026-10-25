@@ -1,14 +1,10 @@
 import request from 'supertest';
-import jwt from 'jsonwebtoken';
 import { PrismaClient } from '@prisma/client';
 import { createApp } from '../src/app';
-import { loadAuthConfig } from '../src/config';
+import { signTestToken } from './helpers/tokens';
 
-const config = loadAuthConfig();
-
-function signToken(role: 'user' | 'admin', secret: string = config.jwtSecret): string {
-  return jwt.sign({ role }, secret, { algorithm: 'HS256', subject: '1', expiresIn: '1h' });
-}
+const signToken = (role: 'user' | 'admin', secret?: string) =>
+  signTestToken({ role }, { subject: '1' }, secret);
 
 describe('POST /api/vehicles', () => {
   const db = new PrismaClient();

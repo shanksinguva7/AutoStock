@@ -1,9 +1,9 @@
 import express, { Express } from 'express';
 import request from 'supertest';
-import jwt from 'jsonwebtoken';
 import { createRequireAuth, getAuthUser, requireAdmin } from '../src/middleware/auth';
 import { errorHandler } from '../src/middleware/errorHandler';
 import { loadAuthConfig } from '../src/config';
+import { signTestToken as signToken } from './helpers/tokens';
 
 const config = loadAuthConfig();
 
@@ -19,14 +19,6 @@ function buildGuardedApp(): Express {
   });
   app.use(errorHandler);
   return app;
-}
-
-function signToken(
-  payload: object,
-  options: jwt.SignOptions = {},
-  secret: string = config.jwtSecret,
-): string {
-  return jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '1h', ...options });
 }
 
 const userToken = () => signToken({ role: 'user' }, { subject: '7' });

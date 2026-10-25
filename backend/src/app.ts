@@ -24,11 +24,13 @@ export function createApp(db: PrismaClient): Express {
   const healthController = new HealthController(new HealthService(new PrismaHealthRepository(db)));
   app.use('/health', healthRoutes(healthController));
 
-  const authService = new AuthService(new PrismaUserRepository(db), loadAuthConfig());
+  // Loaded once so login and the auth guard always sign and verify with the same secret.
+  const authConfig = loadAuthConfig();
+  const authService = new AuthService(new PrismaUserRepository(db), authConfig);
   app.use('/api/auth', authRoutes(new AuthController(authService)));
 
   const vehicleController = new VehicleController(new VehicleService(new PrismaVehicleRepository(db)));
-  app.use('/api/vehicles', vehicleRoutes(vehicleController, createRequireAuth(loadAuthConfig())));
+  app.use('/api/vehicles', vehicleRoutes(vehicleController, createRequireAuth(authConfig)));
 
   // Must be registered last so it catches errors from every route above.
   app.use(errorHandler);
