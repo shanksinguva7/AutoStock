@@ -1,10 +1,7 @@
 import request from 'supertest';
 import { PrismaClient } from '@prisma/client';
 import { createApp } from '../src/app';
-import { signTestToken } from './helpers/tokens';
-
-const signToken = (role: 'user' | 'admin', secret?: string) =>
-  signTestToken({ role }, { subject: '1' }, secret);
+import { signRoleToken as signToken } from './helpers/tokens';
 
 describe('POST /api/vehicles', () => {
   const db = new PrismaClient();
