@@ -9,6 +9,9 @@ export interface Vehicle {
   quantity: number;
 }
 
+/** The fields an admin sends to create or fully replace a vehicle. */
+export type VehicleInput = Omit<Vehicle, 'id'>;
+
 /** Search form values. Kept as strings because they come straight from inputs; blank means "any". */
 export interface SearchFilters {
   make: string;
@@ -38,4 +41,24 @@ export function fetchVehicles(filters: SearchFilters): Promise<Vehicle[]> {
 /** Buys one unit; the backend answers 409 when the vehicle is out of stock. */
 export function purchaseVehicle(id: number): Promise<Vehicle> {
   return apiRequest<Vehicle>(`/api/vehicles/${id}/purchase`, { method: 'POST' });
+}
+
+/** Admin only. */
+export function createVehicle(data: VehicleInput): Promise<Vehicle> {
+  return apiRequest<Vehicle>('/api/vehicles', { method: 'POST', body: data });
+}
+
+/** Admin only. PUT replaces every field, so `data` must be the whole vehicle. */
+export function updateVehicle(id: number, data: VehicleInput): Promise<Vehicle> {
+  return apiRequest<Vehicle>(`/api/vehicles/${id}`, { method: 'PUT', body: data });
+}
+
+/** Admin only. */
+export function deleteVehicle(id: number): Promise<void> {
+  return apiRequest<void>(`/api/vehicles/${id}`, { method: 'DELETE' });
+}
+
+/** Admin only. `amount` must be a positive whole number. */
+export function restockVehicle(id: number, amount: number): Promise<Vehicle> {
+  return apiRequest<Vehicle>(`/api/vehicles/${id}/restock`, { method: 'POST', body: { amount } });
 }
