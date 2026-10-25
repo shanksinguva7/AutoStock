@@ -24,4 +24,8 @@ export class VehicleController {
     const vehicle = await this.vehicleService.create(data);
     res.status(HttpStatus.CREATED).json(vehicle);
   };
+
+  list = async (_req: Request, res: Response): Promise<void> => {
+    res.status(HttpStatus.OK).json(await this.vehicleService.list());
+  };
 }

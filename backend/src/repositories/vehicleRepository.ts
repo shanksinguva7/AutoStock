@@ -13,6 +13,7 @@ export type NewVehicle = Omit<Vehicle, 'id'>;
 
 export interface VehicleRepository {
   create(data: NewVehicle): Promise<Vehicle>;
+  findAll(): Promise<Vehicle[]>;
 }
 
 export class PrismaVehicleRepository implements VehicleRepository {
@@ -20,6 +21,12 @@ export class PrismaVehicleRepository implements VehicleRepository {
 
   async create(data: NewVehicle): Promise<Vehicle> {
     return toVehicle(await this.db.vehicle.create({ data }));
+  }
+
+  async findAll(): Promise<Vehicle[]> {
+    // Ordered by id so the list is stable and new vehicles appear last.
+    const rows = await this.db.vehicle.findMany({ orderBy: { id: 'asc' } });
+    return rows.map(toVehicle);
   }
 }
 

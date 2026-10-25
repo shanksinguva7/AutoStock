@@ -8,7 +8,8 @@ export class VehicleService {
     return this.vehicles.create(data);
   }
 
+  /** Returns every vehicle, including sold-out ones (quantity 0) so the UI can show them. */
   async list(): Promise<Vehicle[]> {
-    return [];
+    return this.vehicles.findAll();
   }
 }

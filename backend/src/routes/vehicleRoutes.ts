@@ -6,6 +6,7 @@ import { requireAdmin } from '../middleware/auth';
 export function vehicleRoutes(controller: VehicleController, requireAuth: RequestHandler): Router {
   const router = Router();
   router.use(requireAuth);
+  router.get('/', controller.list);
   router.post('/', requireAdmin, controller.create);
   return router;
 }
