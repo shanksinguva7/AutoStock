@@ -46,8 +46,8 @@ Tick a box only when the tests pass and the commits are made. One slice at a tim
 
 ## Phase 3 — Documentation and delivery
 - [ ] Screenshots: login, dashboard, search, admin panel, mobile view -> `docs/screenshots/`
-- [ ] README: overview, setup (backend + frontend), env vars, seeded admin credentials, API summary, assumptions (list returns qty 0; admin for all writes; purchase = 1 unit)
-- [ ] README: test report (coverage output + test counts) for backend and frontend
+- [x] README: overview, setup (backend + frontend), env vars, seeded admin credentials, API summary, assumptions (list returns qty 0; admin for all writes; purchase = 1 unit)
+- [x] README: test report (coverage output + test counts) for backend and frontend
 - [ ] README: "My AI Usage" in MY OWN words: tools (Claude Code, plugins used), how, honest reflection
 - [ ] `/export` every Claude Code session to `prompts/session-N.md`; assemble raw `PROMPTS.md` (logs + public chat links), no summaries
 - [ ] Optional (only if everything above is done): deploy with Postgres and add the live link
