@@ -1,4 +1,5 @@
 import express, { Express } from 'express';
+import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
 import { PrismaHealthRepository } from './repositories/healthRepository';
 import { HealthService } from './services/healthService';
@@ -14,11 +15,13 @@ import { VehicleController } from './controllers/vehicleController';
 import { vehicleRoutes } from './routes/vehicleRoutes';
 import { errorHandler } from './middleware/errorHandler';
 import { createRequireAuth } from './middleware/auth';
-import { loadAuthConfig } from './config';
+import { loadAuthConfig, loadCorsOrigins } from './config';
 
 /** Builds the Express app. The DB client is injected so tests can pass their own. */
 export function createApp(db: PrismaClient): Express {
   const app = express();
+  // Registered first so preflight requests are answered before the auth guard rejects them.
+  app.use(cors({ origin: loadCorsOrigins() }));
   app.use(express.json());
 
   const healthController = new HealthController(new HealthService(new PrismaHealthRepository(db)));

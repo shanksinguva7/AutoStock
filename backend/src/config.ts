@@ -35,3 +35,14 @@ function requireEnv(env: NodeJS.ProcessEnv, name: string): string {
   }
   return value;
 }
+
+/**
+ * Reads the browser origins allowed to call the API from CORS_ORIGIN (comma-separated).
+ * Unset means none: local dev goes through the Vite proxy, which needs no CORS.
+ */
+export function loadCorsOrigins(env: NodeJS.ProcessEnv = process.env): string[] {
+  return (env.CORS_ORIGIN ?? '')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter((origin) => origin.length > 0);
+}
